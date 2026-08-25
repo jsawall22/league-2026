@@ -1,0 +1,4788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F4F4EE" id="themeColor">
+<meta name="color-scheme" content="light dark">
+<title>The League — 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Caveat:wght@500;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F4EE;
+  --paper-2:#FBFBF7;
+  --rule:#BACADA;
+  --margin:#D24B3E;
+  --ink:#17202E;
+  --pen:#24408F;
+  --graphite:#6E736D;
+  --moss:#54684A;
+  --ochre:#9A7420;
+  --pitch:34px;
+  --panel:#EFEFE9;
+  --hover:#EDF1F7;
+  --tint-blue:#E6ECF8;
+  --tint-red:#FBEDEB;
+  --tint-green:#EAF1E7;
+  --tint-gold:#F7F0DE;
+  --tint-slate:#E7E9EC;
+  --faint:#A9ADA7;
+  --bar-bg:rgba(244,244,238,.93);
+  color-scheme:light;
+
+  --display:"Bricolage Grotesque","Helvetica Neue",sans-serif;
+  --hand:"Caveat",cursive;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --body:"IBM Plex Sans","Helvetica Neue",sans-serif;
+}
+
+:root[data-theme="dark"]{
+  --paper:#14161B;
+  --paper-2:#1A1E25;
+  --rule:#2B3948;
+  --margin:#E4695C;
+  --ink:#E9E7DF;
+  --pen:#8AAEF2;
+  --graphite:#9CA2A8;
+  --moss:#93C47D;
+  --ochre:#D9B65E;
+  --panel:#232830;
+  --hover:#232C3A;
+  --tint-blue:#1F2939;
+  --tint-red:#2E1F1D;
+  --tint-green:#1D2620;
+  --tint-gold:#2B2618;
+  --tint-slate:#242830;
+  --faint:#70767E;
+  --bar-bg:rgba(20,22,27,.94);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body{
+  background-color:var(--paper);
+  background-image:repeating-linear-gradient(
+    to bottom,
+    transparent 0 calc(var(--pitch) - 1px),
+    var(--rule) calc(var(--pitch) - 1px) var(--pitch)
+  );
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:15px;
+  line-height:var(--pitch);
+  -webkit-font-smoothing:antialiased;
+}
+
+.sheet{
+  max-width:1180px;
+  margin:0 auto;
+  padding:0 26px 0 62px;
+  position:relative;
+}
+/* the red margin rule down the left of the page */
+.sheet::before{
+  content:"";
+  position:absolute;
+  top:0;bottom:0;left:40px;
+  width:1px;
+  background:var(--margin);
+  opacity:.55;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky;top:0;z-index:60;
+  background:var(--bar-bg);
+  backdrop-filter:blur(6px);
+  border-bottom:1.5px solid var(--ink);
+}
+.topbar-in{
+  max-width:1180px;margin:0 auto;
+  padding:0 26px 0 62px;
+  display:flex;align-items:center;gap:22px;
+  height:56px;
+}
+.brand{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:17px;
+  letter-spacing:-.03em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.brand span{color:var(--margin)}
+.topnav{display:flex;gap:20px;margin-left:auto;flex-wrap:wrap}
+.topnav a{
+  font-family:var(--mono);
+  font-size:11.5px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--graphite);
+  text-decoration:none;
+  padding:3px 0;
+  border-bottom:1.5px solid transparent;
+}
+.topnav a:hover,.topnav a:focus-visible{color:var(--pen);border-bottom-color:var(--pen)}
+.topnav a.current{color:var(--ink);border-bottom-color:var(--margin)}
+.themebtn{
+  flex:none;margin-left:16px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  padding:7px 11px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;
+  display:flex;align-items:center;gap:6px;
+}
+.themebtn:hover{background:var(--ink);color:var(--paper)}
+.themebtn:focus-visible{outline:2px solid var(--pen);outline-offset:2px}
+.themebtn .glyph{font-size:12px;line-height:1}
+.brand{cursor:pointer}
+.section,.hero{scroll-margin-top:70px}
+
+/* ---------- shared type ---------- */
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--graphite);
+}
+.section{padding:44px 0 12px;position:relative}
+.section-head{
+  display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+  border-bottom:2px solid var(--ink);
+  padding-bottom:8px;margin-bottom:26px;
+}
+.section-head h2{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(26px,4.2vw,40px);
+  letter-spacing:-.035em;
+  line-height:1.05;
+  text-transform:uppercase;
+}
+.section-head .note{
+  margin-left:auto;
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--graphite);
+}
+
+/* ---------- hero ---------- */
+.hero{padding:56px 0 30px}
+.hero .stamp{
+  font-family:var(--hand);
+  font-size:52px;
+  color:var(--pen);
+  line-height:1;
+  transform:rotate(-3deg);
+  display:inline-block;
+  margin-bottom:6px;
+}
+.hero h1{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(46px,11vw,124px);
+  line-height:.86;
+  letter-spacing:-.055em;
+  text-transform:uppercase;
+  margin:6px 0 0;
+}
+.hero h1 em{
+  font-style:normal;
+  display:block;
+  color:var(--paper);
+  -webkit-text-stroke:1.6px var(--ink);
+}
+.hero-sub{
+  max-width:52ch;
+  margin-top:22px;
+  font-size:16px;
+}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.btn{
+  font-family:var(--mono);
+  font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  padding:11px 20px;
+  border:1.5px solid var(--ink);
+  background:var(--ink);color:var(--paper);
+  text-decoration:none;cursor:pointer;
+  transition:transform .12s ease, background .12s ease, color .12s ease;
+}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--pen)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--pen);border-color:var(--pen);color:var(--paper);box-shadow:3px 3px 0 var(--ink)}
+
+.facts{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  border:2px solid var(--ink);
+  margin-top:36px;
+  background:var(--paper-2);
+}
+.fact{padding:14px 16px;border-right:1.5px solid var(--ink)}
+.fact:last-child{border-right:none}
+.fact dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--graphite);line-height:1.6}
+.fact dd{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.03em;line-height:1.3}
+
+/* ---------- owners ---------- */
+.owners{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:0;
+  border:2px solid var(--ink);
+  background:var(--paper-2);
+}
+.owner{
+  border-right:1.5px solid var(--ink);
+  border-bottom:1.5px solid var(--ink);
+  padding:16px 18px 18px;
+  background:none;
+  text-align:left;
+  font:inherit;color:inherit;
+  cursor:pointer;
+  transition:background .12s ease;
+}
+.owner:hover,.owner:focus-visible{background:var(--hover);outline:none}
+.owner .slot{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  color:var(--margin);text-transform:uppercase;line-height:1.8;
+}
+.owner .who{
+  font-family:var(--hand);font-size:38px;line-height:1;color:var(--pen);
+  margin:2px 0 10px;
+}
+.owner .mix{display:flex;flex-wrap:wrap;gap:5px}
+
+/* position chips */
+.pos{
+  font-family:var(--mono);font-weight:500;
+  font-size:10px;letter-spacing:.08em;
+  padding:2px 6px;line-height:1.6;
+  border:1px solid currentColor;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.pos-QB{color:var(--pen);background:var(--tint-blue)}
+.pos-RB{color:var(--margin);background:var(--tint-red)}
+.pos-WR{color:var(--moss);background:var(--tint-green)}
+.pos-TE{color:var(--ochre);background:var(--tint-gold)}
+.pos-K{color:var(--graphite);background:var(--panel)}
+.pos-DEF{color:var(--ink);background:var(--tint-slate)}
+
+/* ---------- rosters ---------- */
+.tabs{display:flex;flex-wrap:wrap;gap:0;border:2px solid var(--ink);border-bottom:none}
+.tab{
+  flex:1 1 auto;min-width:110px;
+  font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  padding:10px 8px;
+  background:var(--paper-2);border:none;border-right:1.5px solid var(--ink);
+  color:var(--graphite);cursor:pointer;
+}
+.tab:last-child{border-right:none}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.tab:focus-visible{outline:2px solid var(--pen);outline-offset:-4px}
+
+.roster-wrap{border:2px solid var(--ink);background:var(--paper-2);overflow-x:auto}
+table.roster{width:100%;border-collapse:collapse;min-width:520px}
+table.roster th{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--graphite);text-align:left;font-weight:500;
+  padding:9px 14px;border-bottom:1.5px solid var(--ink);
+}
+table.roster td{
+  padding:7px 14px;
+  border-bottom:1px solid var(--rule);
+  vertical-align:middle;
+}
+table.roster tr:last-child td{border-bottom:none}
+table.roster tbody tr:hover{background:var(--hover)}
+.col-div{border-left:1.5px solid var(--ink)}
+.pick{font-family:var(--mono);font-size:11px;color:var(--graphite);width:44px}
+.pname{font-size:15px;font-weight:500}
+.pteam{font-family:var(--mono);font-size:12px;letter-spacing:.06em}
+.pbye{font-family:var(--mono);font-size:12px;text-align:center}
+.pmatch{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-align:center;width:60px}
+.pmatch .ok{color:var(--moss)}
+.pmatch .no{color:var(--margin)}
+.dash{color:var(--faint)}
+.cell-in{
+  font-family:var(--mono);font-size:12px;
+  border:1.5px solid var(--rule);background:var(--paper);color:var(--ink);
+  padding:4px 6px;width:100%;max-width:74px;
+}
+.cell-in:focus{outline:none;border-color:var(--pen);background:var(--hover)}
+.cell-in.team{text-transform:uppercase;letter-spacing:.06em}
+.cell-in.bye{max-width:58px;text-align:center}
+.cell-in.pos{max-width:66px;cursor:pointer}
+.cell-in.bye::-webkit-outer-spin-button,.cell-in.bye::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.cell-in.bye[type=number]{-moz-appearance:textfield}
+
+/* season points columns */
+.pwk{
+  font-family:var(--mono);font-size:13px;text-align:right;width:62px;
+  color:var(--ink);
+}
+.pseason{width:86px;text-align:right;line-height:1.25;padding-top:5px;padding-bottom:5px}
+.pseason b{font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.02em;display:block}
+.pseason i{
+  font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--graphite);display:block;
+}
+tr.prow{cursor:pointer}
+tr.prow.open{background:var(--tint-blue)}
+tr.prow.open .pname{font-weight:600}
+tr.pdetail td{background:var(--panel);padding:10px 14px 12px;border-bottom:1.5px solid var(--ink)}
+.wk-strip-in{display:flex;flex-wrap:wrap;gap:4px}
+.wk-cell{
+  flex:0 0 auto;min-width:38px;text-align:center;
+  border:1px solid var(--rule);background:var(--paper-2);padding:3px 2px;
+}
+.wk-cell i{
+  font-style:normal;font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;
+  color:var(--graphite);display:block;line-height:1.4;
+}
+.wk-cell b{font-family:var(--display);font-weight:800;font-size:15px;line-height:1.2;display:block}
+.wk-cell.none b{color:var(--faint);font-weight:400}
+.wk-cell.bye{border-color:var(--margin)}
+.wk-cell.bye b{color:var(--margin);font-family:var(--mono);font-size:9px;font-weight:400}
+.wk-cell.now{border-color:var(--pen);border-width:1.5px}
+.wk-cell.pre{opacity:.42}
+.wk-cell.pre b{font-weight:400}
+.pseason i.since{color:var(--pen);text-transform:none;letter-spacing:.02em;font-size:9.5px}
+.wk-note b{color:var(--ink);font-weight:600}
+.wk-note{font-family:var(--mono);font-size:11px;color:var(--graphite);line-height:1.8;margin-top:8px}
+.rosterhint{
+  border:2px solid var(--ink);border-top:none;background:var(--paper-2);
+  padding:9px 14px;margin-top:0;
+}
+
+/* ---------- lineup card ---------- */
+.builder{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
+.controls{
+  border:2px solid var(--ink);background:var(--paper-2);
+  padding:14px 16px;margin-bottom:20px;
+  display:flex;gap:18px;flex-wrap:wrap;align-items:center;
+}
+.ctrl-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--graphite);display:block;line-height:1.8}
+.chooser{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.chip{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+  padding:6px 11px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;
+}
+.chip[aria-pressed="true"]{background:var(--pen);border-color:var(--pen);color:var(--paper)}
+.chip:focus-visible{outline:2px solid var(--margin);outline-offset:2px}
+select.week{
+  font-family:var(--mono);font-size:12px;
+  padding:6px 10px;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);
+}
+.ctrl-actions{margin-left:auto;display:flex;gap:8px}
+.mini{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  padding:7px 12px;border:1.5px solid var(--ink);background:transparent;cursor:pointer;color:var(--ink);
+}
+.mini:hover{background:var(--ink);color:var(--paper)}
+
+.card{border:2.5px solid var(--ink);background:var(--paper-2)}
+.card-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 16px;border-bottom:2px solid var(--ink);
+}
+.card-head .team-line{font-family:var(--hand);font-size:30px;line-height:1;color:var(--pen)}
+.card-head .wk{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--graphite)}
+.card-head .cardtot{
+  font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.02em;
+  border-left:1.5px solid var(--ink);padding-left:12px;
+}
+.card-head .cardtot small{
+  display:block;font-family:var(--mono);font-weight:400;font-size:9px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--graphite);line-height:1.4;
+}
+
+.slot-row{
+  display:grid;grid-template-columns:96px 1fr;
+  border-bottom:1.5px solid var(--ink);
+}
+.slot-row:last-of-type{border-bottom:none}
+.slot-key{
+  font-family:var(--mono);font-size:12px;letter-spacing:.08em;
+  padding:0 12px;border-right:1.5px solid var(--ink);
+  display:flex;align-items:center;color:var(--ink);
+  background:var(--panel);
+}
+.slot-fill{
+  width:100%;text-align:left;background:transparent;border:none;
+  padding:9px 14px;min-height:52px;cursor:pointer;font:inherit;color:inherit;
+  display:flex;align-items:center;gap:10px;
+}
+.slot-fill:hover{background:var(--hover)}
+.slot-row.active .slot-fill{background:var(--tint-blue);box-shadow:inset 3px 0 0 var(--pen)}
+.slot-fill:focus-visible{outline:2px solid var(--pen);outline-offset:-3px}
+.slot-empty{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.written{
+  font-family:var(--hand);font-size:29px;line-height:1.05;color:var(--pen);
+  display:inline-block;transform:rotate(-.7deg);
+}
+.written.fresh{animation:ink .3s ease-out}
+@keyframes ink{from{opacity:0;transform:rotate(-3deg) translateY(4px)}to{opacity:1;transform:rotate(-.7deg) translateY(0)}}
+.written-meta{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
+  color:var(--graphite);margin-left:auto;text-align:right;line-height:1.5;
+}
+.wm-team{display:block}
+.wm-opp{display:block;font-size:12px;font-weight:600;color:var(--ink);letter-spacing:.04em}
+.wm-opp.bye{color:var(--margin)}
+.wm-opp.live{color:var(--ochre)}
+.wm-opp.done{color:var(--moss)}
+.wm-opp.unk{color:var(--faint);font-weight:400}
+.wm-kick{display:block;font-size:9.5px;color:var(--faint);letter-spacing:.06em}
+.bye-flag{
+  font-family:var(--hand);font-size:20px;color:var(--margin);
+  border:1.5px solid var(--margin);border-radius:50%/40%;
+  padding:0 9px;transform:rotate(-4deg);white-space:nowrap;line-height:1.5;
+}
+.erase{
+  font-family:var(--mono);font-size:14px;line-height:1;
+  border:1px solid var(--graphite);background:transparent;color:var(--graphite);
+  width:22px;height:22px;cursor:pointer;flex:none;
+}
+.erase:hover{border-color:var(--margin);color:var(--margin)}
+
+/* live points chip on the lineup card */
+.lp{
+  flex:none;text-align:right;min-width:64px;
+  border-left:1.5px solid var(--rule);padding-left:10px;margin-left:4px;
+}
+.lp b{font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.02em;line-height:1.1;display:block}
+.lp i{
+  font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--graphite);line-height:1.5;display:block;
+}
+.lp.playing b{color:var(--ochre)}
+.lp.playing i{color:var(--ochre)}
+.lp.final b{color:var(--moss)}
+.lp.pre b{color:var(--faint)}
+.lp.none b{color:var(--faint);font-size:15px}
+
+.status{
+  border:2px solid var(--ink);border-top:none;
+  padding:12px 16px;font-family:var(--mono);font-size:12px;line-height:1.7;
+  background:var(--paper-2);
+}
+.status.ok{background:var(--tint-green);border-color:var(--moss);color:var(--moss)}
+.status.warn{background:var(--tint-red);border-color:var(--margin);color:var(--margin)}
+
+.pool{border:2px solid var(--ink);background:var(--paper-2);position:sticky;top:78px}
+.pool-head{padding:12px 16px;border-bottom:1.5px solid var(--ink)}
+.pool-head h3{font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:-.02em;text-transform:uppercase;line-height:1.5}
+.pool-head p{font-family:var(--mono);font-size:11px;color:var(--graphite);line-height:1.7}
+.pool-list{max-height:520px;overflow-y:auto}
+.pool-item{
+  width:100%;display:flex;align-items:flex-start;gap:10px;
+  padding:8px 16px;border:none;border-bottom:1px solid var(--rule);
+  background:transparent;font:inherit;color:inherit;text-align:left;cursor:pointer;
+}
+.pool-item:hover{background:var(--hover)}
+.pool-item:focus-visible{outline:2px solid var(--pen);outline-offset:-3px}
+.pool-item .nm{font-size:14.5px;font-weight:500;line-height:1.4;flex:1;min-width:0}
+.pool-item .pwhen{
+  display:block;font-style:normal;font-family:var(--mono);font-size:10px;
+  letter-spacing:.04em;color:var(--graphite);line-height:1.5;font-weight:400;
+}
+.pool-item .pwhen.bye{color:var(--margin)}
+.pool-item .pwhen.live{color:var(--ochre)}
+.pool-item .pwhen.done{color:var(--moss)}
+.pool-item .tm{
+  font-family:var(--mono);font-size:11px;color:var(--graphite);
+  margin-left:auto;text-align:right;flex:none;padding-top:2px;
+}
+.pool-item.on-bye .tm{color:var(--margin)}
+.pool-item[disabled]{opacity:.35;cursor:not-allowed}
+.pool-empty{padding:22px 16px;font-family:var(--mono);font-size:12px;line-height:1.7;color:var(--graphite)}
+
+/* ---------- rules ---------- */
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0;border:2px solid var(--ink);background:var(--paper-2)}
+.rulebox{padding:18px 20px 22px;border-right:1.5px solid var(--ink)}
+.rulebox:last-child{border-right:none}
+.rulebox h3{
+  font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.02em;
+  text-transform:uppercase;line-height:1.6;margin-bottom:8px;
+  border-bottom:1.5px solid var(--ink);
+}
+.rulebox ol{list-style:none;counter-reset:r}
+.rulebox li{
+  counter-increment:r;position:relative;padding-left:26px;
+  font-size:14px;line-height:1.6;margin-bottom:9px;
+}
+.rulebox li::before{
+  content:counter(r) ".";
+  position:absolute;left:0;top:1px;
+  font-family:var(--mono);font-size:11px;color:var(--margin);
+}
+.scale{font-family:var(--mono);font-size:12px;line-height:1.75;color:var(--ink)}
+.scribble{
+  font-family:var(--hand);font-size:22px;color:var(--margin);
+  transform:rotate(-2deg);display:inline-block;line-height:1.3;
+}
+.assume{
+  border:1.5px dashed var(--ochre);background:var(--tint-gold);
+  padding:10px 12px;margin-top:14px;
+}
+.assume h4{
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ochre);font-weight:600;line-height:1.8;
+}
+.assume p{font-size:13px;line-height:1.6;color:var(--ink)}
+.assume code{font-family:var(--mono);font-size:12px;background:var(--paper);padding:0 3px}
+
+/* ---------- matchups ---------- */
+.syncbar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  border:2px solid var(--ink);border-bottom:none;background:var(--tint-green);padding:9px 14px;
+}
+.syncbar .dot{width:8px;height:8px;border-radius:50%;background:var(--moss);flex:none}
+.synctext{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--moss);line-height:1.7}
+.syncstamp{font-family:var(--mono);font-size:11px;color:var(--graphite);margin-left:auto}
+.syncstamp.warn{color:var(--margin)}
+.syncbar.nostore{background:var(--tint-red)}
+.syncbar.nostore .dot{background:var(--margin)}
+.syncbar.nostore .synctext{color:var(--margin)}
+.syncbar .mini{padding:6px 12px;font-size:10.5px}
+
+/* live feed bar */
+.livebar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  border:2px solid var(--ink);border-bottom:none;background:var(--panel);padding:9px 14px;
+}
+.livebar .dot{width:8px;height:8px;border-radius:50%;background:var(--faint);flex:none}
+.livebar.on .dot{background:var(--ochre);animation:beat 1.6s ease-in-out infinite}
+.livebar.done .dot{background:var(--moss)}
+.livebar.err .dot{background:var(--margin)}
+@keyframes beat{0%,100%{opacity:1}50%{opacity:.25}}
+.livetext{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--graphite);line-height:1.7}
+.livebar.on .livetext{color:var(--ochre)}
+.livebar.err .livetext{color:var(--margin)}
+.liveactions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.mini[aria-pressed="true"]{background:var(--pen);border-color:var(--pen);color:var(--paper)}
+.mini[disabled]{opacity:.4;cursor:not-allowed}
+.mini[disabled]:hover{background:transparent;color:var(--ink)}
+.errnote{
+  border:2px solid var(--margin);border-top:none;background:var(--tint-red);
+  padding:11px 14px;font-family:var(--mono);font-size:11.5px;line-height:1.8;color:var(--margin);
+}
+.errnote b{font-weight:600}
+.errnote.soft{border-color:var(--ochre);background:var(--tint-gold);color:var(--ochre)}
+.srclabel{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--graphite);display:flex;align-items:center;gap:6px;
+}
+.srcsel{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+  padding:6px 8px;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);
+}
+.srcsel:focus{outline:2px solid var(--pen);outline-offset:2px}
+
+.week-strip{
+  position:relative;
+  display:flex;overflow-x:auto;border:2px solid var(--ink);border-bottom:none;background:var(--paper-2);
+}
+.week-btn{
+  flex:1 0 auto;min-width:56px;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;
+  padding:9px 6px;border:none;border-right:1.5px solid var(--ink);
+  background:transparent;color:var(--graphite);cursor:pointer;white-space:nowrap;
+}
+.week-btn:last-child{border-right:none}
+.week-btn[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.week-btn.playoff{color:var(--margin)}
+.week-btn.playoff[aria-pressed="true"]{background:var(--margin);color:var(--paper)}
+.week-btn.played::after{content:" •";color:var(--moss)}
+.week-btn.nfllive::after{content:" ●";color:var(--ochre)}
+.week-btn.now{box-shadow:inset 0 -3px 0 var(--pen)}
+.week-btn.now[aria-pressed="true"]{box-shadow:inset 0 -3px 0 var(--paper)}
+.weeknote{
+  display:block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;line-height:1.9;color:var(--graphite);
+}
+.weeknote.now{color:var(--moss)}
+.slot-row.locked .slot-key{background:var(--tint-slate);color:var(--graphite)}
+.slot-row.locked .slot-fill{cursor:not-allowed;opacity:.82}
+.slot-row.locked .written{color:var(--graphite)}
+.lockmark{font-size:9px;margin-left:5px;opacity:.75}
+.pool-item.locked{opacity:.4}
+.pool-item.locked .tm{color:var(--margin)}
+select.pick-sel.locked,select.pick-sel:disabled{
+  cursor:not-allowed;opacity:.85;color:var(--graphite);
+  background:repeating-linear-gradient(135deg,transparent 0 6px,var(--panel) 6px 7px);
+}
+.mini.warnbtn{background:var(--margin);border-color:var(--margin);color:var(--paper)}
+.score-lock-wrap{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto}
+input.pt-in.sealed{cursor:default;color:var(--graphite)}
+input.pt-in.sealed:focus{background:transparent}
+input.pt-in.sealed.auto{color:var(--ochre)}
+input.pt-in.sealed.autofinal{color:var(--moss)}
+@media (max-width:719px){ .score-lock-wrap{margin-left:0;width:100%} }
+.unlockbox{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}
+/* an author display rule outranks the UA [hidden] rule, so restate it */
+.unlockbox[hidden]{display:none}
+.fld.pw{width:170px;font-size:13px;letter-spacing:.14em}
+.fld.pw.bad{border-color:var(--margin);background:var(--tint-red)}
+@media (max-width:719px){
+  .unlockbox{width:100%;margin-top:6px}
+  .fld.pw{flex:1 1 100%;font-size:16px;letter-spacing:.1em}
+}
+.weeknote.off{color:var(--ochre)}
+.week-btn:focus-visible{outline:2px solid var(--pen);outline-offset:-4px}
+.week-strip{scroll-behavior:smooth}
+.btn:active,.mini:active,.chip:active,.tab:active,.week-btn:active{transform:translateY(1px)}
+
+.matchboard{border:2px solid var(--ink);background:var(--paper-2);padding:0 0 4px}
+.matchboard-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:12px 16px;border-bottom:1.5px solid var(--ink);
+}
+.matchboard-head h3{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:-.02em;text-transform:uppercase;line-height:1.5}
+.matchboard-head .hint{font-family:var(--mono);font-size:11px;color:var(--graphite)}
+.matchup{border-bottom:1.5px solid var(--ink);padding:10px 16px 12px}
+.matchup:last-child{border-bottom:none}
+.matchup .mlabel{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--graphite);line-height:2}
+.mtag{
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:1px 6px;
+  border:1px solid var(--moss);color:var(--moss);line-height:1.7;
+}
+.mtag.tie{border-color:var(--graphite);color:var(--graphite)}
+
+/* lineup sheet inside a matchup */
+.sheet-wrap{overflow-x:auto;border:1.5px solid var(--ink);background:var(--paper-2);margin-top:6px}
+table.sheet{border-collapse:collapse;width:100%;min-width:680px}
+table.sheet th,table.sheet td{border:1px solid var(--ink);padding:0}
+th.sheet-slot{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+  width:86px;text-align:left;padding:6px 10px;background:var(--panel);color:var(--ink);font-weight:500;
+}
+th.sheet-team{
+  text-align:left;padding:7px 10px;
+  font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:-.01em;text-transform:uppercase;
+}
+th.sheet-team.won{color:var(--pen)}
+th.sheet-team .tnum{font-family:var(--mono);font-size:10px;color:var(--margin);letter-spacing:.1em}
+th.sheet-pts{
+  width:78px;text-align:center;padding:7px 4px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--graphite);font-weight:500;
+}
+td.sheet-name{padding:0}
+select.pick-sel{
+  width:100%;border:none;background:transparent;cursor:pointer;
+  font-family:var(--mono);font-size:11.5px;color:var(--faint);
+  padding:8px 8px;appearance:none;
+}
+select.pick-sel.filled{font-family:var(--hand);font-size:25px;color:var(--pen);padding:2px 8px}
+select.pick-sel.bye{color:var(--margin)}
+select.pick-sel:focus{outline:2px solid var(--pen);outline-offset:-3px;background:var(--hover)}
+td.sheet-pts{width:78px;position:relative}
+input.pt-in{
+  width:100%;border:none;background:transparent;text-align:center;
+  font-family:var(--hand);font-size:24px;color:var(--pen);padding:4px 6px;
+}
+input.pt-in::-webkit-outer-spin-button,input.pt-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input.pt-in[type=number]{-moz-appearance:textfield}
+input.pt-in:focus{outline:none;background:var(--hover)}
+input.pt-in.auto{color:var(--ochre)}
+input.pt-in.autofinal{color:var(--moss)}
+td.sheet-pts .src{
+  position:absolute;right:2px;bottom:0;
+  font-family:var(--mono);font-size:8px;letter-spacing:.08em;
+  color:var(--faint);pointer-events:none;line-height:1.4;
+}
+td.sheet-pts .src.live{color:var(--ochre)}
+td.sheet-pts .src.fin{color:var(--moss)}
+td.sheet-pts .src.man{color:var(--pen)}
+.statline{
+  display:block;font-family:var(--mono);font-size:9.5px;color:var(--graphite);
+  padding:0 8px 5px;line-height:1.5;
+}
+
+.statline.live{color:var(--ochre)}
+:root[data-theme="dark"] .hero h1 em{-webkit-text-stroke-color:var(--ink)}
+:root[data-theme="dark"] .tblock-head.won .tnum{color:var(--paper)}
+:root[data-theme="dark"] select.pick-sel option{background:var(--paper-2);color:var(--ink)}
+table.sheet tfoot th.sheet-slot{
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;background:var(--ink);color:var(--paper);
+}
+td.total-blank{background:var(--panel)}
+td.sheet-pts.total{
+  text-align:center;font-family:var(--display);font-weight:800;font-size:19px;
+  padding:6px 4px;background:var(--panel);
+}
+td.sheet-pts.total.won{background:var(--pen);color:var(--paper)}
+.await{font-family:var(--mono);font-size:11.5px;color:var(--faint);padding:8px 10px;display:block}
+
+/* roster editing */
+.roster-bar{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  border:2px solid var(--ink);border-bottom:none;background:var(--panel);
+  padding:9px 14px;
+}
+.rcount{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--graphite)}
+.rcount.full{color:var(--margin)}
+.bar-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.mini.solid{background:var(--ink);color:var(--paper)}
+.mini.solid:hover{background:var(--pen);border-color:var(--pen)}
+.rm-col{display:none;width:44px}
+.roster-wrap.editing .rm-col{display:table-cell}
+.rm{
+  font-family:var(--mono);font-size:12px;line-height:1;
+  border:1px solid var(--graphite);background:transparent;color:var(--graphite);
+  width:24px;height:24px;cursor:pointer;
+}
+.rm:hover{border-color:var(--margin);color:var(--margin);background:var(--tint-red)}
+.addbar{border:2px solid var(--ink);border-top:none;background:var(--paper-2);padding:12px 14px 14px}
+.addrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.fld{
+  font-family:var(--mono);font-size:12.5px;
+  border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);
+  padding:8px 10px;
+}
+.fld:focus{outline:none;border-color:var(--pen);background:var(--hover)}
+.fld.name{flex:1 1 220px;min-width:0}
+.fld.team{width:82px;text-transform:uppercase}
+.fld.pos{width:88px}
+.fld.bye{width:82px}
+.addnote{font-family:var(--mono);font-size:11px;color:var(--graphite);line-height:1.9;margin-top:8px}
+.addnote.bad{color:var(--margin)}
+
+/* roster moves ledger */
+.ledger{border:2px solid var(--ink);border-top:none;background:var(--paper-2)}
+.ledger-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:10px 14px;border-bottom:1.5px solid var(--ink);
+}
+.ledger-head h3{
+  font-family:var(--display);font-weight:800;font-size:14px;
+  letter-spacing:.02em;text-transform:uppercase;line-height:1.6;
+}
+.used{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--graphite)}
+.used.maxed{color:var(--margin)}
+.move{
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  padding:7px 14px;border-bottom:1px solid var(--rule);
+}
+.move:last-child{border-bottom:none}
+.mkind{
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  padding:1px 7px;border:1px solid currentColor;line-height:1.8;flex:none;
+}
+.mkind.drop{color:var(--margin)}
+.mkind.add{color:var(--moss)}
+.mkind.trade{color:var(--pen)}
+.move.trade{background:var(--tint-blue)}
+.tlegs{display:flex;flex-wrap:wrap;gap:12px;flex:1 1 100%;margin-left:2px}
+.tleg{font-family:var(--hand);font-size:21px;line-height:1.3}
+.tleg i{
+  font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--graphite);margin-right:5px;
+}
+.tradebar{border:2px solid var(--pen);border-top:none;background:var(--tint-blue);padding:12px 14px}
+.trade-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tradewith{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--graphite)}
+.fld.partner{margin-left:6px;padding:6px 8px;font-size:12px}
+.trade-count{font-family:var(--mono);font-size:11px;color:var(--pen)}
+.trade-actions{margin-left:auto;display:flex;gap:8px}
+.trade-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.trade-col h4{
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--graphite);font-weight:500;line-height:2;border-bottom:1px solid var(--rule);
+}
+.trade-list{max-height:230px;overflow-y:auto;background:var(--paper-2);border:1px solid var(--rule)}
+.trade-item{
+  display:flex;align-items:center;gap:7px;padding:5px 8px;cursor:pointer;
+  border-bottom:1px solid var(--rule);font-size:13px;
+}
+.trade-item:last-child{border-bottom:none}
+.trade-item:hover{background:var(--hover)}
+.trade-item.on{background:var(--tint-gold)}
+.trade-item .tnm{flex:1;min-width:0}
+.trade-item .ttm{font-family:var(--mono);font-size:10.5px;color:var(--graphite)}
+.trade-fix{margin-top:10px;border-top:1.5px dashed var(--pen);padding-top:9px}
+.fix-block{margin-bottom:10px}
+.fix-block h5{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--margin);font-weight:600;line-height:1.9;
+}
+.fix-sub{display:block;color:var(--graphite);font-weight:400;letter-spacing:.1em;text-transform:none;font-size:10px}
+.fix-list{max-height:150px;overflow-y:auto;background:var(--paper-2);border:1px solid var(--rule);margin-top:4px}
+.fa-rows{display:flex;flex-wrap:wrap;gap:6px;margin:5px 0}
+.fa-chip{
+  display:inline-flex;align-items:center;gap:6px;background:var(--tint-green);
+  border:1px solid var(--moss);padding:3px 6px;font-size:13px;
+}
+.fa-chip i{font-style:normal;font-family:var(--mono);font-size:10px;color:var(--graphite)}
+@media (max-width:719px){ .trade-cols{grid-template-columns:1fr} .trade-actions{margin-left:0;width:100%} .trade-actions .mini{flex:1} }
+.mwho{font-family:var(--hand);font-size:24px;line-height:1.2}
+.mmeta{font-family:var(--mono);font-size:11px;color:var(--graphite)}
+.mwhen{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--graphite);white-space:nowrap}
+.move-actions{display:flex;gap:6px;flex:none}
+.tiny{
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 8px;border:1px solid var(--graphite);background:transparent;color:var(--graphite);cursor:pointer;
+}
+.tiny:hover{border-color:var(--pen);color:var(--pen);background:var(--hover)}
+.tiny.undo:hover{border-color:var(--margin);color:var(--margin);background:var(--tint-red)}
+.move-edit{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:10px 14px;border-bottom:1px solid var(--rule);background:var(--hover);
+}
+.move-edit:last-child{border-bottom:none}
+#ledgerNote{padding:0 14px}
+.ledger-empty{padding:16px 14px;font-family:var(--mono);font-size:11.5px;line-height:1.8;color:var(--graphite)}
+
+.standings-wrap{border:2px solid var(--ink);background:var(--paper-2);overflow-x:auto;margin-top:20px}
+table.standings{width:100%;border-collapse:collapse;min-width:560px}
+table.standings th{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--graphite);text-align:left;font-weight:500;padding:9px 12px;border-bottom:1.5px solid var(--ink);
+}
+table.standings td{padding:8px 12px;border-bottom:1px solid var(--rule)}
+table.standings td.num,table.standings th.num{text-align:right;font-family:var(--mono);font-size:12.5px}
+table.standings tr.cut td{border-bottom:2px dashed var(--margin)}
+.seed{font-family:var(--mono);font-size:11px;color:var(--graphite);width:34px}
+.seed.in{color:var(--margin)}
+.sname{font-family:var(--hand);font-size:26px;line-height:1.1}
+.cut-note{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--margin);padding:8px 12px;border-bottom:1px solid var(--rule);
+}
+.tiebreak{
+  border:2px solid var(--ink);border-top:none;background:var(--paper-2);
+  padding:12px 16px;font-family:var(--mono);font-size:11.5px;line-height:1.9;color:var(--graphite);
+}
+.tiebreak b{color:var(--ink);font-weight:600}
+
+footer{padding:40px 0 60px;border-top:2px solid var(--ink);margin-top:44px}
+footer .final{font-family:var(--display);font-weight:800;font-size:clamp(20px,3.4vw,32px);letter-spacing:-.03em;text-transform:uppercase;line-height:1.15}
+footer p{font-family:var(--mono);font-size:11.5px;color:var(--graphite);margin-top:10px;line-height:1.8}
+
+@media (max-width:900px){
+  .builder{grid-template-columns:1fr}
+  .pool{position:static}
+  .pool-list{max-height:none}
+  .rulebox{border-right:none;border-bottom:1.5px solid var(--ink)}
+  .rulebox:last-child{border-bottom:none}
+  .owner{border-right:none}
+}
+
+/* ---------- phones ---------- */
+@media (max-width:719px){
+  :root{--pitch:30px}
+  body{font-size:15px;line-height:1.55}
+  .sheet,.topbar-in{padding-left:30px;padding-right:14px}
+  .sheet::before{left:15px}
+
+  .topbar-in{height:52px;gap:14px}
+  .brand{font-size:15px}
+  .topnav{
+    margin-left:auto;flex-wrap:nowrap;overflow-x:auto;gap:16px;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;
+  }
+  .topnav::-webkit-scrollbar{display:none}
+  .topnav a{padding:8px 0;white-space:nowrap}
+
+  .hero{padding:36px 0 22px}
+  .hero .stamp{font-size:42px}
+  .hero-sub{font-size:15.5px;line-height:1.6}
+  .hero-actions .btn{flex:1 1 100%;text-align:center;padding:14px 18px}
+
+  .facts{grid-template-columns:1fr 1fr}
+  .fact{border-right:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink)}
+  .fact:nth-child(2n){border-right:none}
+  .fact:nth-last-child(-n+1){border-bottom:none}
+  .fact dd{font-size:22px}
+
+  .section{padding:34px 0 10px}
+  .section-head{padding-bottom:6px;margin-bottom:18px}
+  .section-head .note{margin-left:0;flex-basis:100%}
+
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tab{flex:0 0 auto;min-width:0;padding:13px 16px}
+
+  table.roster{min-width:0}
+  table.roster th,table.roster td{padding:8px 4px}
+  table.roster .pick{display:none}
+  table.roster .pmatch{display:none}      /* feed tick is a diagnostic; bye stays */
+  table.roster .pbye{display:table-cell;width:34px;font-size:12px;text-align:center}
+  .pname{font-size:14px}
+  .pwk{width:38px;font-size:12px}
+  .pseason{width:54px}
+  .pseason b{font-size:14.5px}
+  .pseason i{font-size:8.5px;letter-spacing:.04em}
+  .pteam{font-size:11px}
+  table.roster .pos{font-size:9px;padding:1px 4px}
+  .wk-cell{min-width:34px}
+  .rosterhint{padding:9px 12px;font-size:10.5px}
+
+  .roster-bar,.addbar,.ledger-head{padding-left:12px;padding-right:12px}
+  .bar-actions{margin-left:0;width:100%}
+  .bar-actions .mini{flex:1}
+  .mini,.tiny{padding:11px 12px;font-size:11px}
+  .tiny{padding:8px 10px}
+  .fld{font-size:16px;padding:11px 10px}
+  .fld.name{flex:1 1 100%}
+  .fld.team,.fld.pos,.fld.bye{flex:1 1 auto;width:auto}
+  #addPlayer{flex:1 1 100%}
+  .move,.move-edit{padding:10px 12px}
+  .mwhen{margin-left:0;flex-basis:100%}
+  .move-actions{margin-left:auto}
+
+  .controls{padding:12px}
+  .ctrl-actions{margin-left:0;width:100%}
+  .ctrl-actions .mini{flex:1}
+  select.week{font-size:16px;padding:10px}
+  .chip{padding:10px 13px;font-size:12px}
+  .slot-row{grid-template-columns:66px 1fr}
+  .slot-key{font-size:11px;padding:0 8px}
+  .slot-fill{min-height:56px;padding:8px 10px}
+  .written{font-size:25px}
+  .written-meta{font-size:10px}
+  .lp{min-width:56px;padding-left:8px}
+  .lp b{font-size:17px}
+  .pool-item{padding:11px 12px}
+  .card-head{flex-wrap:wrap}
+
+  .week-strip{ -webkit-overflow-scrolling:touch }
+  .syncbar,.livebar{padding:10px 12px}
+  .synctext,.livetext{flex:1 1 100%;order:2}
+  .syncstamp{margin-left:0;order:3}
+  .syncbar .mini{order:4;margin-left:auto;padding:9px 14px}
+  .liveactions{margin-left:0;width:100%;order:5}
+  .liveactions .mini{flex:1}
+  .themebtn{margin-left:12px;padding:9px 10px}
+  .themebtn .label{display:none}
+  .week-btn{min-width:52px;padding:13px 6px;font-size:12.5px}
+  .matchup{padding:10px 12px 14px}
+  .stack{display:grid;gap:12px}
+  .tblock{border:1.5px solid var(--ink);background:var(--paper-2)}
+  .tblock-head{
+    display:flex;align-items:center;gap:8px;
+    padding:9px 12px;border-bottom:1.5px solid var(--ink);background:var(--panel);
+    font-family:var(--display);font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:-.01em;
+  }
+  .tblock-head.won{background:var(--pen);color:var(--paper)}
+  .tblock-head.won .tnum{color:#C9D6F2}
+  .tblock-head.won .mtag{border-color:var(--paper);color:var(--paper)}
+  .srow{
+    display:grid;grid-template-columns:62px 1fr 76px;align-items:center;
+    border-bottom:1px solid var(--rule);
+  }
+  .srow:last-child{border-bottom:none}
+  .sslot{
+    font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+    padding:0 10px;color:var(--ink);
+  }
+  .scell{min-width:0;border-left:1px solid var(--rule)}
+  .spts{border-left:1px solid var(--rule);text-align:center;position:relative}
+  .srow.stotal{border-top:1.5px solid var(--ink);background:var(--panel)}
+  .srow.stotal .sslot{font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:10px}
+  .total-val{font-family:var(--display);font-weight:800;font-size:20px;display:block;padding:8px 4px}
+  .total-val.won{background:var(--pen);color:var(--paper)}
+  select.pick-sel{font-size:16px;padding:12px 8px}
+  select.pick-sel.filled{font-size:24px;padding:7px 8px}
+  input.pt-in{font-size:24px;padding:8px 4px}
+  .tblock .await{padding:14px 12px}
+  .statline{font-size:9px;padding:0 8px 6px}
+
+  table.standings{min-width:0;font-size:13px}
+  table.standings th,table.standings td{padding:8px 7px}
+  .sname{font-size:22px}
+  .tiebreak{padding:12px;font-size:11px;line-height:1.8}
+
+  .rulebox{padding:16px 14px 18px}
+  .rulebox li{font-size:14.5px;line-height:1.65}
+}
+
+@media (max-width:400px){
+  .srow{grid-template-columns:54px 1fr 68px}
+  .week-btn{min-width:46px}
+  .tab{padding:13px 12px;font-size:11px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<script>
+  try{
+    document.documentElement.dataset.theme =
+      window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }catch(e){ document.documentElement.dataset.theme = "light"; }
+</script>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand">The League <span>/</span> 2026</div>
+    <nav class="topnav">
+      <a href="#owners">Owners</a>
+      <a href="#rosters">Rosters</a>
+      <a href="#lineup">Lineup Card</a>
+      <a href="#matchups">Matchups</a>
+      <a href="#rules">Rules &amp; Scoring</a>
+    </nav>
+    <button class="themebtn" id="themeToggle" aria-label="Switch appearance">
+      <span class="glyph" aria-hidden="true">◐</span><span class="label">Dark</span>
+    </button>
+  </div>
+</div>
+
+<div class="sheet">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="eyebrow">Six teams &middot; 18-man rosters &middot; Drafted after the final preseason game</div>
+    <span class="stamp">2026</span>
+    <h1>Six Teams.<br>108 Players.<br><em>One Notebook.</em></h1>
+    <p class="hero-sub">Every roster from the draft, written down and now searchable. Set a legal lineup on the card below before noon Sunday, or last week's stands. Turn the live feed on and the sheet scores itself off the box scores — the commissioner can still overwrite any number.</p>
+    <div class="hero-actions">
+      <a class="btn" href="#lineup">Set a lineup</a>
+      <a class="btn ghost" href="#matchups">Open the scoreboard</a>
+    </div>
+
+    <dl class="facts">
+      <div class="fact"><dt>Teams</dt><dd>6</dd></div>
+      <div class="fact"><dt>Roster limit</dt><dd>18</dd></div>
+      <div class="fact"><dt>Starters</dt><dd>9</dd></div>
+      <div class="fact"><dt>Transactions</dt><dd>5</dd></div>
+      <div class="fact"><dt>Trade deadline</dt><dd>Wk 12</dd></div>
+    </dl>
+  </header>
+
+  <!-- OWNERS -->
+  <section class="section" id="owners">
+    <div class="section-head">
+      <h2>The Draft Order</h2>
+      <span class="note">Tap an owner to open their roster</span>
+    </div>
+    <div class="owners" id="ownerGrid"></div>
+  </section>
+
+  <!-- ROSTERS -->
+  <section class="section" id="rosters">
+    <div class="section-head">
+      <h2>Rosters</h2>
+      <span class="note">Listed in draft order</span>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Team rosters" id="rosterTabs"></div>
+    <div class="roster-bar">
+      <span class="rcount" id="rosterCount"></span>
+      <div class="bar-actions">
+        <button class="mini" id="sortToggle" aria-pressed="false">Sort: draft</button>
+        <button class="mini" id="seasonPull">Bank season to date</button>
+        <button class="mini" id="editToggle" aria-pressed="false">Edit roster</button>
+        <button class="mini" id="tradeToggle" hidden>Propose a trade</button>
+        <span class="unlockbox" id="rosterGate" hidden>
+          <input class="fld pw" id="rosterPw" type="password" placeholder="Commissioner word"
+                 autocomplete="off" aria-label="Commissioner word">
+          <button class="mini solid" id="rosterGo">Unlock</button>
+          <button class="mini" id="rosterCancel">Cancel</button>
+        </span>
+      </div>
+    </div>
+    <div class="roster-wrap" id="rosterWrap">
+      <table class="roster">
+        <thead>
+          <tr>
+            <th class="pick">Pk</th>
+            <th>Player</th>
+            <th class="col-div">Team</th>
+            <th class="col-div">Pos</th>
+            <th class="col-div pbye">Bye</th>
+            <th class="col-div pmatch">Feed</th>
+            <th class="col-div pwk" id="wkColHead">Wk 1</th>
+            <th class="col-div pseason">Season</th>
+            <th class="rm-col"></th>
+          </tr>
+        </thead>
+        <tbody id="rosterBody"></tbody>
+      </table>
+    </div>
+    <p class="addnote rosterhint">Tap any player for a week-by-week breakdown. Points are what he scored under league rules whether or not he was started. Under <b>Edit roster</b> you can correct a rostered player's NFL team, position or bye week — a trade or a data fix, not a transaction.</p>
+    <div class="tradebar" id="tradeBar" hidden>
+      <div class="trade-head">
+        <span class="ctrl-label">Trade</span>
+        <label class="tradewith">with
+          <select class="fld partner" id="tradePartner" aria-label="Trade partner"></select>
+        </label>
+        <span class="trade-count" id="tradeCount"></span>
+        <span class="trade-actions">
+          <button class="mini solid" id="tradeGo">Make the trade</button>
+          <button class="mini" id="tradeCancel">Close</button>
+        </span>
+      </div>
+      <div class="trade-cols">
+        <div class="trade-col">
+          <h4 id="tradeMineHead">Send</h4>
+          <div class="trade-list" id="tradeMine"></div>
+        </div>
+        <div class="trade-col">
+          <h4 id="tradeTheirsHead">Receive</h4>
+          <div class="trade-list" id="tradeTheirs"></div>
+        </div>
+      </div>
+      <div class="trade-fix" id="tradeFixMine" hidden></div>
+      <div class="trade-fix" id="tradeFixTheirs" hidden></div>
+      <p class="addnote" id="tradeNote" role="status"></p>
+    </div>
+    <div class="addbar" id="addBar" hidden>
+      <span class="ctrl-label">Add a player</span>
+      <div class="addrow">
+        <input class="fld name" id="npName" type="text" placeholder="Player or defense" aria-label="Player name">
+        <input class="fld team" id="npTeam" type="text" maxlength="3" placeholder="TEAM" aria-label="NFL team">
+        <select class="fld pos" id="npPos" aria-label="Position">
+          <option value="QB">QB</option><option value="RB">RB</option><option value="WR">WR</option>
+          <option value="TE">TE</option><option value="K">K</option><option value="DEF">DEF</option>
+        </select>
+        <input class="fld bye" id="npBye" type="number" min="1" max="18" placeholder="Bye" aria-label="Bye week">
+        <button class="mini solid" id="addPlayer">Add player</button>
+      </div>
+      <p class="addnote" id="addNote" role="status"></p>
+    </div>
+    <div class="ledger">
+      <div class="ledger-head">
+        <h3>Roster moves</h3>
+        <span class="used" id="movesUsed"></span>
+      </div>
+      <p class="addnote" id="ledgerNote" role="status"></p>
+      <div id="ledgerList"></div>
+    </div>
+  </section>
+
+  <!-- LINEUP -->
+  <section class="section" id="lineup">
+    <div class="section-head">
+      <h2>Starting Lineup Card</h2>
+      <span class="note">Due 12:00 Sunday</span>
+    </div>
+
+    <div class="controls">
+      <div>
+        <span class="ctrl-label">Team</span>
+        <div class="chooser" id="teamChooser"></div>
+      </div>
+      <div>
+        <span class="ctrl-label">Week</span>
+        <select class="week" id="weekSelect" aria-label="Week"></select>
+        <span class="weeknote" id="weekNote"></span>
+      </div>
+      <div class="ctrl-actions">
+        <button class="mini" id="lockToggle" aria-pressed="true">Locks on</button>
+        <span class="unlockbox" id="unlockBox" hidden>
+          <input class="fld pw" id="unlockPw" type="password" placeholder="Commissioner word"
+                 autocomplete="off" aria-label="Commissioner word">
+          <button class="mini solid" id="unlockGo">Unlock</button>
+          <button class="mini" id="unlockCancel">Cancel</button>
+        </span>
+        <button class="mini" id="nowBtn" hidden>Go to current week</button>
+        <button class="mini" id="autoFill">Fill best available</button>
+        <button class="mini" id="clearCard">Erase card</button>
+      </div>
+    </div>
+
+    <div class="builder">
+      <div>
+        <div class="card">
+          <div class="card-head">
+            <span class="team-line" id="cardTeam">Brian</span>
+            <span class="wk" id="cardWeek">Week 1</span>
+            <span class="cardtot" id="cardTotal">—<small>Points</small></span>
+          </div>
+          <div id="slots"></div>
+        </div>
+        <div class="status" id="status"></div>
+      </div>
+
+      <aside class="pool">
+        <div class="pool-head">
+          <h3 id="poolTitle">Pick a slot</h3>
+          <p id="poolSub">Choose a line on the card, then write in a player.</p>
+        </div>
+        <div class="pool-list" id="poolList"></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- MATCHUPS -->
+  <section class="section" id="matchups">
+    <div class="section-head">
+      <h2>Weekly Matchups</h2>
+      <span class="note">Scored by starter &middot; Top 4 make the playoffs</span>
+    </div>
+
+    <div class="syncbar">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="synctext">Shared league book — everyone with the link writes to the same scores</span>
+      <span class="syncstamp" id="syncNote">Not synced yet</span>
+      <button class="mini" id="refreshBook">Refresh</button>
+    </div>
+
+    <div class="livebar" id="liveBar">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="livetext" id="liveText">Live feed off — points are typed in by hand</span>
+      <span class="liveactions">
+        <label class="srclabel">Source
+          <select class="srcsel" id="providerSel" aria-label="Live stat source">
+            <option value="auto">Sleeper + ESPN</option>
+            <option value="sleeper">Sleeper only</option>
+            <option value="espn">ESPN only</option>
+          </select>
+        </label>
+        <button class="mini" id="liveToggle" aria-pressed="false">Turn live feed on</button>
+        <button class="mini" id="livePull" disabled>Pull box scores</button>
+      </span>
+    </div>
+    <div class="errnote" id="liveErr" hidden></div>
+
+
+    <div class="week-strip" id="weekStrip"></div>
+    <div class="matchboard">
+      <div class="matchboard-head">
+        <h3 id="matchWeekTitle">Week 1</h3>
+        <span class="hint" id="matchHint">Type each team's points to record the result.</span>
+        <span class="score-lock-wrap">
+          <button class="mini" id="scoreLock" aria-pressed="true">Scores locked</button>
+          <span class="unlockbox" id="scoreGate" hidden>
+            <input class="fld pw" id="scorePw" type="password" placeholder="Commissioner word"
+                   autocomplete="off" aria-label="Commissioner word to edit scores">
+            <button class="mini solid" id="scoreGo">Unlock</button>
+            <button class="mini" id="scoreCancel">Cancel</button>
+          </span>
+        </span>
+      </div>
+      <div id="matchList"></div>
+    </div>
+
+    <div class="standings-wrap">
+      <table class="standings">
+        <thead>
+          <tr>
+            <th class="seed">Sd</th>
+            <th>Team</th>
+            <th class="num">W</th>
+            <th class="num">L</th>
+            <th class="num">T</th>
+            <th class="num">PF</th>
+            <th class="num">PA</th>
+            <th class="num">Diff</th>
+          </tr>
+        </thead>
+        <tbody id="standingsBody"></tbody>
+      </table>
+    </div>
+    <div class="tiebreak">
+      <b>Seeding ties break by:</b> 1. Total points &nbsp;&middot;&nbsp; 2. Total defensive points &nbsp;&middot;&nbsp; 3. Total points, entire roster, from Week 15 &nbsp;&middot;&nbsp; 4. Same from Week 14<br>
+      <b>Week 16:</b> 1 seed plays 4 seed, 2 seed plays 3 seed &nbsp;&middot;&nbsp; <b>Week 17:</b> Championship and consolation
+    </div>
+  </section>
+
+  <!-- RULES -->
+  <section class="section" id="rules">
+    <div class="section-head">
+      <h2>Rules &amp; Scoring</h2>
+      <span class="note">From the league sheet</span>
+    </div>
+
+    <div class="rules-grid">
+      <div class="rulebox">
+        <h3>General</h3>
+        <ol>
+          <li>Rosters total no more than 18 players. Fewer than 18 is allowed.</li>
+          <li>Start 1 quarterback, 1 kicker, 1 defense, at least 1 but no more than 2 running backs, and any combination of wide receivers and tight ends to fill 8 starting positions.</li>
+          <li>The draft runs after the final preseason game and before the first regular season game.</li>
+          <li>Lineups are due by 12:00 Sunday afternoon. Thursday and Saturday players must be called in before game time that day. Last week's lineup stands unless you change it.</li>
+          <li>Each team gets 5 transactions per season — a roster addition or a trade. Trades have no player limit.</li>
+          <li>Nobody is added or dropped until the commissioner is called. First come, first served.</li>
+          <li>No transactions after Week 12.</li>
+          <li>Weekly ties stand. The scoring system depends on the number of teams and is announced on draft night.</li>
+          <li>All decisions made by the commissioner are FINAL.</li>
+        </ol>
+      </div>
+
+      <div class="rulebox">
+        <h3>Scoring — Offense</h3>
+        <ol>
+          <li>Touchdown run scores 6.</li>
+          <li>Touchdown pass scores 3 for the passer and 3 for the receiver.</li>
+          <li>Kicks are scored accordingly.</li>
+          <li>Passing yards, in 20-yard steps:
+            <div class="scale">260–279 = 1 &middot; 280–299 = 2 &middot; 300–319 = 3<br>320–339 = 4 &middot; 340–359 = 5 &middot; 360–379 = 6<br>380–399 = 7 &middot; and so on <span class="scribble">460–479 = 11</span></div>
+          </li>
+          <li>Rushing yards, in 20-yard steps:
+            <div class="scale">60–79 = 1 &middot; 80–99 = 2 &middot; 100–119 = 3<br>120–139 = 4 &middot; 140–159 = 5 &middot; 160–179 = 6<br>180–199 = 7 &middot; 200–219 = 8 &middot; and so on</div>
+          </li>
+          <li>Receiving yards score the same as rushing yards, plus receptions:
+            <div class="scale">5 rec = 1 &middot; 6 rec = 2 &middot; 7 rec = 3<br>8 rec = 4 &middot; 9 rec = 5 &middot; and so on <span class="scribble">14 rec = 10</span></div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="rulebox">
+        <h3>Scoring — Defense</h3>
+        <ol>
+          <li>Any turnover recovered by the defense scores 1.</li>
+          <li>A turnover returned for a touchdown scores 7.</li>
+          <li>Special teams turnovers and the touchdowns that come directly from them score for the defense.</li>
+          <li>Any safety scores for the defense.</li>
+          <li>Rushing yards allowed:
+            <div class="scale">80–99 = 1 &middot; 60–79 = 2 &middot; 40–59 = 3<br>20–39 = 4 &middot; 1–19 = 5 &middot; 0 or negative = 6</div>
+          </li>
+          <li>Passing yards allowed:
+            <div class="scale">180–199 = 1 &middot; 160–179 = 2 &middot; 140–159 = 3<br>120–139 = 4 &middot; 100–119 = 5 &middot; 80–99 = 6<br>60–79 = 7 &middot; and so on</div>
+          </li>
+          <li>Points allowed:
+            <div class="scale">14–16 = 1 &middot; 11–13 = 2 &middot; 8–10 = 3<br>5–7 = 4 &middot; 2–4 = 5 &middot; shutout = 6</div>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="assume">
+      <h4>Where the sheet is silent — what the auto-scorer assumes</h4>
+      <p>The league sheet doesn't spell these out, so the feed makes a call. Change them at the top of the script (<code>HOUSE</code>) or just overwrite the number on the sheet — a typed number always beats the feed.</p>
+      <p><b>Kicks are scored accordingly</b> → field goal 3, extra point 1. Nothing extra for distance.<br>
+      <b>Safety</b> → 2 to the defense, on top of the turnover and yardage lines.<br>
+      <b>Two-point conversions</b> → 2 to the scorer; a two-point pass is 1 to the passer and 1 to the receiver.<br>
+      <b>Interceptions and lost fumbles by your own players</b> → no penalty. The sheet lists no negative, so none is applied.<br>
+      <b>Rushing and receiving yards</b> → scored on separate ladders, then added. A back with 70 rushing and 70 receiving gets 1 + 1, not the 3 he'd get if you pooled 140 yards.<br>
+      <b>Passing yards under 260</b> → 0. The ladder starts at 260.<br>
+      <b>Points allowed 17 or more</b> → 0. The ladder tops out at 14–16.<br>
+      <b>1 point allowed</b> → treated as the 2–4 band. The sheet skips it.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="final">All decisions made by the commissioner are final.</div>
+    <p>Lineups by 12:00 Sunday &middot; Thursday and Saturday players called in before kickoff &middot; No transactions after Week 12</p>
+  </footer>
+</div>
+<script>
+/* ============================================================
+   THE LEAGUE — 2026
+   ============================================================ */
+
+const TEAMS = [
+  { slot:1, owner:"Brian", roster:[
+    ["Jahmyr Gibbs","DET","RB",6],["Jaxon Smith-Njigba","SEA","WR",11],["De'Von Achane","MIA","RB",6],
+    ["Lamar Jackson","BAL","QB",13],["Garrett Wilson","NYJ","WR",13],["Breece Hall","NYJ","RB",13],
+    ["Tetairoa McMillan","CAR","WR",5],["Mike Evans","SF","WR",8],["Dak Prescott","DAL","QB",14],
+    ["Bhayshul Tuten","JAX","RB",7],["Denver Broncos","DEN","DEF",10],["Chris Boswell","PIT","K",9],
+    ["Chris Godwin","TB","WR",10],["Malik Willis","MIA","QB",6],["TreVeyon Henderson","NE","RB",11],
+    ["New England Patriots","NE","DEF",11],["Will Reichard","MIN","K",6],["Tucker Kraft","GB","TE",11]
+  ]},
+  { slot:2, owner:"Emily", roster:[
+    ["Bijan Robinson","ATL","RB",11],["Drake Maye","NE","QB",11],["Amon-Ra St. Brown","DET","WR",6],
+    ["Derrick Henry","BAL","RB",13],["A.J. Brown","NE","WR",11],["Brock Bowers","LV","TE",13],
+    ["Emeka Egbuka","TB","WR",10],["Jaxson Dart","NYG","QB",8],["Javonte Williams","DAL","RB",14],
+    ["Zay Flowers","BAL","WR",13],["Brandon Aubrey","DAL","K",14],["Houston Texans","HOU","DEF",8],
+    ["D'Andre Swift","CHI","RB",10],["Matthew Stafford","LAR","QB",11],["Marvin Harrison Jr.","ARI","WR",14],
+    ["Ka'imi Fairbairn","HOU","K",8],["Philadelphia Eagles","PHI","DEF",10],["Alec Pierce","IND","WR",13]
+  ]},
+  { slot:3, owner:"Scott", roster:[
+    ["Jonathan Taylor","IND","RB",13],["Jalen Hurts","PHI","QB",10],["Justin Jefferson","MIN","WR",6],
+    ["Justin Herbert","LAC","QB",7],["Chase Brown","CIN","RB",6],["Drake London","ATL","WR",11],
+    ["Josh Jacobs","GB","RB",11],["Sam LaPorta","DET","TE",6],["Nico Collins","HOU","WR",8],
+    ["Patrick Mahomes","KC","QB",5],["Mark Andrews","BAL","TE",13],["Harrison Butker","KC","K",5],
+    ["Jake Bates","DET","K",6],["James Conner","ARI","RB",14],["Los Angeles Rams","LAR","DEF",11],
+    ["Detroit Lions","DET","DEF",6],["Courtland Sutton","DEN","WR",10],["J.K. Dobbins","DEN","RB",10]
+  ]},
+  { slot:4, owner:"Jared", roster:[
+    ["Ja'Marr Chase","CIN","WR",6],["Puka Nacua","LAR","WR",11],["CeeDee Lamb","DAL","WR",14],
+    ["Joe Burrow","CIN","QB",6],["Ashton Jeanty","LV","RB",13],["Jeremiyah Love","ARI","RB",14],
+    ["Omarion Hampton","LAC","RB",7],["Trevor Lawrence","JAX","QB",7],["Chris Olave","NO","WR",8],
+    ["DeVonta Smith","PHI","WR",10],["Travis Etienne Jr.","NO","RB",8],["Colston Loveland","CHI","TE",10],
+    ["Jaylen Waddle","DEN","WR",10],["Cameron Dicker","LAC","K",7],["Jordan Love","GB","QB",11],
+    ["Minnesota Vikings","MIN","DEF",6],["Cairo Santos","CHI","K",10],["Kyler Murray","MIN","QB",6]
+  ]},
+  { slot:5, owner:"Travis", roster:[
+    ["Saquon Barkley","PHI","RB",10],["Kenneth Walker III","KC","RB",5],["Malik Nabers","NYG","WR",8],
+    ["Bo Nix","DEN","QB",10],["George Pickens","DAL","WR",14],["Caleb Williams","CHI","QB",10],
+    ["Davante Adams","LAR","WR",11],["Jared Goff","DET","QB",6],["Bucky Irving","TB","RB",10],
+    ["Terry McLaurin","WAS","WR",7],["David Montgomery","HOU","RB",8],["DK Metcalf","PIT","WR",9],
+    ["Cam Little","JAX","K",7],["Trey Smack","GB","K",11],["Seattle Seahawks","SEA","DEF",11],
+    ["Chicago Bears","CHI","DEF",10],["Jordan Addison","MIN","WR",6],["Quinshon Judkins","CLE","RB",11]
+  ]},
+  { slot:6, owner:"Ben", roster:[
+    ["Josh Allen","BUF","QB",7],["James Cook","BUF","RB",7],["Christian McCaffrey","SF","RB",8],
+    ["Jayden Daniels","WAS","QB",7],["Rashee Rice","KC","WR",5],["Trey McBride","ARI","TE",14],
+    ["Ladd McConkey","LAC","WR",7],["Kyren Williams","LAR","RB",11],["Tee Higgins","CIN","WR",6],
+    ["Cam Skattebo","NYG","RB",8],["Rome Odunze","CHI","WR",10],["DJ Moore","BUF","WR",7],
+    ["Brock Purdy","SF","QB",8],["Carnell Tate","TEN","WR",9],["Evan McPherson","CIN","K",6],
+    ["Jadarian Price","SEA","RB",11],["Eddy Pineiro","SF","K",8],["Christian Watson","GB","WR",11]
+  ]}
+];
+
+const SLOTS = [
+  { key:"QB",    label:"QB",    takes:["QB"] },
+  { key:"RB",    label:"RB",    takes:["RB"] },
+  { key:"RBWR",  label:"RB/WR", takes:["RB","WR"] },
+  { key:"WR1",   label:"WR",    takes:["WR"] },
+  { key:"WR2",   label:"WR",    takes:["WR"] },
+  { key:"WRTE",  label:"WR/TE", takes:["WR","TE"] },
+  { key:"PK",    label:"PK",    takes:["K"] },
+  { key:"DEF",   label:"DEF",   takes:["DEF"] },
+  { key:"WC",    label:"WC",    takes:["QB","RB","WR","TE"] }
+];
+
+const POS_ORDER = { QB:0, RB:1, WR:2, TE:3, K:4, DEF:5 };
+const toPlayers = t => t.roster.map((r,i)=>({ name:r[0], team:r[1], pos:r[2], bye:r[3], pick:i+1 }));
+
+/* ============================================================
+   HOUSE RULES — the gaps the league sheet leaves open.
+   Every one of these is an assumption, not a rule. Edit freely.
+   ============================================================ */
+const HOUSE = {
+  fg: 3,            // "kicks are scored accordingly"
+  xp: 1,
+  fgDistanceBonus: false,
+  safety: 2,
+  twoPtRun: 2,      // two-point conversion, scorer
+  twoPtPass: 1,     // two-point pass: 1 passer + 1 receiver
+  turnoverTD: 6,    // on top of the 1 for the turnover itself -> 7 total for a pick six
+  penalizeGiveaways: false  // sheet lists no negatives, so none are applied
+};
+
+/* ============================================================
+   SCORING ENGINE
+   Pure functions. No DOM, no network. Every ladder below is
+   transcribed straight off the league sheet.
+   ============================================================ */
+const Score = (() => {
+
+  /* ascending ladder: nothing until `start`, then +1 every `step` */
+  const up = (v, start, step) => (v >= start) ? Math.floor((v - start) / step) + 1 : 0;
+
+  /* --- offence --- */
+  const passYards = y => up(y, 260, 20);          // 260-279=1 ... 460-479=11
+  const rushYards = y => up(y, 60, 20);           // 60-79=1, 80-99=2, 100-119=3 ...
+  const recvYards = y => up(y, 60, 20);           // "same as rushing yards"
+  const receptions = r => (r >= 5) ? r - 4 : 0;   // 5=1, 6=2 ... 14=10
+
+  /* --- defence: descending ladders --- */
+  // 80-99=1, 60-79=2, 40-59=3, 20-39=4, 1-19=5, 0 or negative=6. 100+ = 0.
+  function rushAllowed(y){
+    if (y <= 0)  return 6;
+    if (y <= 19) return 5;
+    if (y >= 100) return 0;
+    return Math.floor((99 - y) / 20) + 1;
+  }
+  // 180-199=1, 160-179=2 ... 60-79=7, and so on down to 0-19=10. 200+ = 0.
+  function passAllowed(y){
+    if (y >= 200) return 0;
+    if (y < 0) y = 0;
+    return Math.floor((199 - y) / 20) + 1;
+  }
+  // 14-16=1, 11-13=2, 8-10=3, 5-7=4, 2-4=5, shutout=6. 17+ = 0.
+  function pointsAllowed(p){
+    if (p >= 17) return 0;
+    if (p === 0) return 6;
+    if (p === 1) return 5;          // sheet skips 1; folded into the 2-4 band
+    return Math.floor((16 - p) / 3) + 1;
+  }
+
+  /* Score one skill player. Returns {pts, parts:[{label, n}]} */
+  function offence(s){
+    const parts = [];
+    const add = (label, n) => { if (n) parts.push({ label, n }); };
+
+    add("rush TD",  (s.rushTD  || 0) * 6);
+    add("pass TD",  (s.passTD  || 0) * 3);
+    add("rec TD",   (s.recTD   || 0) * 3);
+    add("pass yds", passYards(s.passYds || 0));
+    add("rush yds", rushYards(s.rushYds || 0));
+    add("rec yds",  recvYards(s.recYds  || 0));
+    add("rec",      receptions(s.rec    || 0));
+    add("2pt",      (s.twoPtRun || 0) * HOUSE.twoPtRun
+                  + (s.twoPtPass || 0) * HOUSE.twoPtPass
+                  + (s.twoPtRec  || 0) * HOUSE.twoPtPass);
+    if (HOUSE.penalizeGiveaways){
+      add("INT", -(s.intThrown || 0));
+      add("FUM", -(s.fumLost  || 0));
+    }
+    return { pts: parts.reduce((a,b)=>a+b.n, 0), parts };
+  }
+
+  function kicker(s){
+    const parts = [];
+    const add = (label, n) => { if (n) parts.push({ label, n }); };
+    add("FG", (s.fgMade || 0) * HOUSE.fg);
+    add("XP", (s.xpMade || 0) * HOUSE.xp);
+    return { pts: parts.reduce((a,b)=>a+b.n, 0), parts };
+  }
+
+  /* Team defence. `s` is from the defence's point of view. */
+  function defence(s){
+    const parts = [];
+    const add = (label, n) => { if (n) parts.push({ label, n }); };
+    add("takeaways", (s.takeaways || 0) * 1);
+    add("TD return", (s.defTD || 0) * HOUSE.turnoverTD);   // 1 + 6 = the sheet's 7
+    add("safety",    (s.safeties || 0) * HOUSE.safety);
+    add("rush allw", rushAllowed(s.rushYdsAllowed ?? 999));
+    add("pass allw", passAllowed(s.passYdsAllowed ?? 999));
+    add("pts allw",  pointsAllowed(s.ptsAllowed ?? 99));
+    return { pts: parts.reduce((a,b)=>a+b.n, 0), parts };
+  }
+
+  function forPosition(pos, s){
+    if (!s) return null;
+    if (pos === "DEF") return defence(s);
+    if (pos === "K")   return kicker(s);
+    return offence(s);
+  }
+
+  return { up, passYards, rushYards, recvYards, receptions,
+           rushAllowed, passAllowed, pointsAllowed,
+           offence, kicker, defence, forPosition };
+})();
+
+/* ---- self-test: every example printed on the league sheet ---- */
+(function testScoring(){
+  const t = [];
+  const eq = (label, got, want) => t.push({ label, got, want, ok: got === want });
+
+  // passing ladder, including the handwritten 460-479 = 11
+  eq("pass 259", Score.passYards(259), 0);
+  eq("pass 260", Score.passYards(260), 1);
+  eq("pass 279", Score.passYards(279), 1);
+  eq("pass 280", Score.passYards(280), 2);
+  eq("pass 300", Score.passYards(300), 3);
+  eq("pass 380", Score.passYards(380), 7);
+  eq("pass 460", Score.passYards(460), 11);
+  eq("pass 479", Score.passYards(479), 11);
+
+  // rushing ladder
+  eq("rush 59",  Score.rushYards(59),  0);
+  eq("rush 60",  Score.rushYards(60),  1);
+  eq("rush 80",  Score.rushYards(80),  2);
+  eq("rush 100", Score.rushYards(100), 3);
+  eq("rush 120", Score.rushYards(120), 4);
+  eq("rush 200", Score.rushYards(200), 8);
+
+  // receptions, including the handwritten 14 rec = 10
+  eq("rec 4",  Score.receptions(4),  0);
+  eq("rec 5",  Score.receptions(5),  1);
+  eq("rec 7",  Score.receptions(7),  3);
+  eq("rec 14", Score.receptions(14), 10);
+
+  // defensive rushing allowed
+  eq("rushAllw 100", Score.rushAllowed(100), 0);
+  eq("rushAllw 99",  Score.rushAllowed(99),  1);
+  eq("rushAllw 80",  Score.rushAllowed(80),  1);
+  eq("rushAllw 79",  Score.rushAllowed(79),  2);
+  eq("rushAllw 40",  Score.rushAllowed(40),  3);
+  eq("rushAllw 20",  Score.rushAllowed(20),  4);
+  eq("rushAllw 19",  Score.rushAllowed(19),  5);
+  eq("rushAllw 1",   Score.rushAllowed(1),   5);
+  eq("rushAllw 0",   Score.rushAllowed(0),   6);
+  eq("rushAllw -5",  Score.rushAllowed(-5),  6);
+
+  // defensive passing allowed
+  eq("passAllw 200", Score.passAllowed(200), 0);
+  eq("passAllw 199", Score.passAllowed(199), 1);
+  eq("passAllw 180", Score.passAllowed(180), 1);
+  eq("passAllw 160", Score.passAllowed(160), 2);
+  eq("passAllw 120", Score.passAllowed(120), 4);
+  eq("passAllw 80",  Score.passAllowed(80),  6);
+  eq("passAllw 60",  Score.passAllowed(60),  7);
+  eq("passAllw 0",   Score.passAllowed(0),  10);
+
+  // points allowed
+  eq("ptsAllw 17", Score.pointsAllowed(17), 0);
+  eq("ptsAllw 16", Score.pointsAllowed(16), 1);
+  eq("ptsAllw 14", Score.pointsAllowed(14), 1);
+  eq("ptsAllw 13", Score.pointsAllowed(13), 2);
+  eq("ptsAllw 10", Score.pointsAllowed(10), 3);
+  eq("ptsAllw 7",  Score.pointsAllowed(7),  4);
+  eq("ptsAllw 4",  Score.pointsAllowed(4),  5);
+  eq("ptsAllw 2",  Score.pointsAllowed(2),  5);
+  eq("ptsAllw 0",  Score.pointsAllowed(0),  6);
+
+  // a pick six is the sheet's 7, not 1 + 7
+  eq("pick six", Score.defence({ takeaways:1, defTD:1, rushYdsAllowed:999, passYdsAllowed:999, ptsAllowed:99 }).pts, 7);
+
+  // a QB who runs still gets his rushing ladder
+  eq("QB rush", Score.offence({ passYds:300, passTD:2, rushYds:60, rushTD:1 }).pts, 3 + 6 + 1 + 6);
+
+  /* The ladders are checked on every load, but silently — a passing test has
+     nothing to say. Results stay on window.__scoringTests if ever needed. */
+  const bad = t.filter(x=>!x.ok);
+  if (bad.length) console.error("Scoring self-test failed", bad);
+  window.__scoringTests = t;
+})();
+
+/* ============================================================
+   LIVE FEED — ESPN public box scores
+   The scoreboard endpoint carries no per-player stats (it returns
+   "statistics":[] per team plus three "leaders"). Per-player lines
+   only exist on /summary?event=ID, so we read the scoreboard for
+   the week's event ids and then pull one summary per game.
+   ============================================================ */
+const ESPN = (() => {
+  const BASE = "https://site.api.espn.com/apis/site/v2/sports/football/nfl";
+  const SEASON = 2026;
+  const REGULAR = 2;
+
+  /* league sheet uses WAS; ESPN uses WSH. everything else lines up. */
+  const TEAM_ALIAS = { WAS:"WSH", WSH:"WAS", JAC:"JAX", JAX:"JAC", LA:"LAR" };
+
+  const SUFFIX = /\b(jr|sr|ii|iii|iv|v)\b/g;
+  function normName(s){
+    return String(s || "")
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[.'’`]/g, "")
+      .replace(/[-–—]/g, " ")
+      .replace(SUFFIX, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  /* pull a numeric stat out of an ESPN stat group by key name */
+  function pick(group, athleteStats, key){
+    const i = (group.keys || []).indexOf(key);
+    if (i < 0) return null;
+    return athleteStats[i];
+  }
+  const toNum = v => {
+    if (v === null || v === undefined) return 0;
+    const n = parseFloat(String(v).replace(/,/g, ""));
+    return isNaN(n) ? 0 : n;
+  };
+  /* "23/31" -> [23,31] */
+  const madeAtt = v => {
+    const m = String(v || "").split("/");
+    return [toNum(m[0]), toNum(m[1])];
+  };
+
+  /* find a team stat on boxscore.teams[].statistics[] */
+  function teamStat(teamEntry, name){
+    const s = (teamEntry.statistics || []).find(x => x.name === name);
+    return s ? toNum(s.displayValue) : 0;
+  }
+  /* distinguish "reported as zero" from "not reported at all" */
+  function hasTeamStat(teamEntry, name){
+    const s = (teamEntry.statistics || []).find(x => x.name === name);
+    return !!s && s.displayValue !== undefined && s.displayValue !== null && s.displayValue !== "";
+  }
+
+  /* ---------- parse one game summary into per-player stat lines ---------- */
+  function parseSummary(json){
+    const out = { players: {}, defenses: {}, meta: null };
+    const comp = json?.header?.competitions?.[0];
+    const box  = json?.boxscore;
+    if (!comp || !box) return out;
+
+    const status = comp.status?.type || {};
+    const state  = status.state || "pre";                 // pre | in | post
+    const detail = status.shortDetail || status.detail || "";
+
+    out.meta = {
+      id: json?.header?.id || comp.id,
+      state, detail,
+      completed: !!status.completed
+    };
+
+    /* team scores, by ESPN team id */
+    const scoreById = {};
+    (comp.competitors || []).forEach(c => {
+      scoreById[c.team?.id] = toNum(c.score);
+    });
+
+    /* Running per-team totals built from the player lines. ESPN sometimes
+       ships an empty boxscore.teams[].statistics — common in preseason —
+       so we can rebuild rushing and passing yards from the players. */
+    const agg = {};
+    const bump = tid => (agg[tid] ||= { rush:0, passGross:0, sackYds:0, ints:0, fumRec:0 });
+
+    /* ---- per-player offensive / kicking lines ---- */
+    (box.players || []).forEach(teamBlock => {
+      const abbr = teamBlock.team?.abbreviation || "";
+      const tid  = teamBlock.team?.id;
+      const A = bump(tid);
+      (teamBlock.statistics || []).forEach(group => {
+        (group.athletes || []).forEach(row => {
+          const a = row.athlete || {};
+          const key = normName(a.displayName || a.fullName);
+          if (!key) return;
+          const st = row.stats || [];
+          const p = out.players[key] || (out.players[key] = {
+            name: a.displayName || a.fullName, team: abbr, espnId: a.id,
+            passYds:0, passTD:0, intThrown:0,
+            rushYds:0, rushTD:0,
+            recYds:0, recTD:0, rec:0,
+            fgMade:0, fgAtt:0, xpMade:0, xpAtt:0,
+            fumLost:0, state, detail
+          });
+          p.state = state; p.detail = detail; p.team = abbr;
+
+          switch (group.name){
+            case "passing":
+              p.passYds   = toNum(pick(group, st, "passingYards"));
+              p.passTD    = toNum(pick(group, st, "passingTouchdowns"));
+              p.intThrown = toNum(pick(group, st, "interceptions"));
+              A.passGross += p.passYds;
+              /* "3-19" = three sacks for nineteen yards */
+              A.sackYds += toNum(String(pick(group, st, "sacks-sackYardsLost") || "").split("-")[1]);
+              break;
+            case "rushing":
+              p.rushYds = toNum(pick(group, st, "rushingYards"));
+              p.rushTD  = toNum(pick(group, st, "rushingTouchdowns"));
+              A.rush += p.rushYds;
+              break;
+            case "receiving":
+              p.recYds = toNum(pick(group, st, "receivingYards"));
+              p.recTD  = toNum(pick(group, st, "receivingTouchdowns"));
+              p.rec    = toNum(pick(group, st, "receptions"));
+              break;
+            case "fumbles":
+              p.fumLost = toNum(pick(group, st, "fumblesLost"));
+              A.fumRec += toNum(pick(group, st, "fumblesRecovered"));
+              break;
+            case "interceptions":
+              A.ints += toNum(pick(group, st, "interceptions"));
+              break;
+            case "kicking": {
+              const fg = madeAtt(pick(group, st, "fieldGoalsMade/fieldGoalAttempts"));
+              const xp = madeAtt(pick(group, st, "extraPointsMade/extraPointAttempts"));
+              p.fgMade = fg[0]; p.fgAtt = fg[1];
+              p.xpMade = xp[0]; p.xpAtt = xp[1];
+              break;
+            }
+          }
+        });
+      });
+    });
+
+    /* ---- team defences ---- */
+    const teams = box.teams || [];
+    if (teams.length === 2){
+      teams.forEach((tm, i) => {
+        const opp = teams[1 - i];
+        const meId  = tm.team?.id;
+        const oppId = opp.team?.id;
+        const abbr  = tm.team?.abbreviation || "";
+        const full  = tm.team?.displayName || "";
+
+        /* what this defence gave up = the opponent's offensive output.
+           Prefer ESPN's team line; rebuild it from the players when absent. */
+        const oppAgg = agg[oppId] || { rush:0, passGross:0, sackYds:0, ints:0, fumRec:0 };
+        const meAgg  = agg[meId]  || { rush:0, passGross:0, sackYds:0, ints:0, fumRec:0 };
+
+        let derived = false;
+        let rushYdsAllowed, passYdsAllowed, takeaways;
+
+        if(hasTeamStat(opp, "rushingYards")){
+          rushYdsAllowed = teamStat(opp, "rushingYards");
+        } else {
+          rushYdsAllowed = oppAgg.rush; derived = true;
+        }
+
+        if(hasTeamStat(opp, "netPassingYards")){
+          passYdsAllowed = teamStat(opp, "netPassingYards");
+        } else {
+          /* net = gross passing minus yardage lost to sacks */
+          passYdsAllowed = Math.max(0, oppAgg.passGross - oppAgg.sackYds);
+          derived = true;
+        }
+
+        if(hasTeamStat(opp, "turnovers")){
+          takeaways = teamStat(opp, "turnovers");
+        } else {
+          takeaways = meAgg.ints + meAgg.fumRec; derived = true;
+        }
+
+        const ptsAllowed = scoreById[oppId] ?? 0;
+
+        /* defensive + return touchdowns for this team */
+        let defTD = 0;
+        const myPlayers = (box.players || []).find(b => b.team?.id === meId);
+        (myPlayers?.statistics || []).forEach(group => {
+          (group.athletes || []).forEach(row => {
+            const st = row.stats || [];
+            if (group.name === "defensive")
+              defTD += toNum(pick(group, st, "defensiveTouchdowns"));
+            if (group.name === "interceptions")
+              defTD += toNum(pick(group, st, "interceptionTouchdowns"));
+          });
+        });
+
+        /* safeties, read off the scoring plays */
+        let safeties = 0;
+        (json.scoringPlays || []).forEach(sp => {
+          const isSafety = /safety/i.test(sp.type?.text || sp.type?.abbreviation || "");
+          if (isSafety && sp.team?.id === meId) safeties++;
+        });
+
+        out.defenses[normName(full)] = {
+          name: full, abbr, espnId: meId,
+          rushYdsAllowed, passYdsAllowed, takeaways, ptsAllowed, defTD, safeties,
+          derived, state, detail
+        };
+      });
+    }
+
+    return out;
+  }
+
+  /* ---------- network ---------- */
+  async function getJSON(url, signal){
+    const r = await fetch(url, { signal, headers: { "Accept": "application/json" } });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  }
+
+  async function weekEvents(week, signal){
+    const url = BASE + "/scoreboard?dates=" + SEASON +
+                "&seasontype=" + REGULAR + "&week=" + week + "&limit=100";
+    const j = await getJSON(url, signal);
+    return (j.events || []).map(e => {
+      const c = e.competitions?.[0] || {};
+      return {
+        id: e.id,
+        name: e.shortName || e.name,
+        state: c.status?.type?.state || e.status?.type?.state || "pre",
+        detail: c.status?.type?.shortDetail || "",
+        teams: (c.competitors || []).map(x => x.team?.abbreviation).filter(Boolean)
+      };
+    });
+  }
+
+  const summaryURL = id => BASE + "/summary?event=" + id;
+
+  /* small concurrency limiter — be a good citizen with an undocumented API */
+  async function mapLimit(items, limit, fn){
+    const out = [];
+    let i = 0;
+    const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+      while (i < items.length){
+        const idx = i++;
+        try { out[idx] = await fn(items[idx]); }
+        catch (e) { out[idx] = { error: e }; }
+      }
+    });
+    await Promise.all(workers);
+    return out;
+  }
+
+  return { BASE, SEASON, REGULAR, TEAM_ALIAS, normName, parseSummary,
+           getJSON, weekEvents, summaryURL, mapLimit };
+})();
+
+/* ============================================================
+   SLEEPER — second source
+   api.sleeper.app is free, needs no key, and returns every
+   player's week in ONE request instead of one per game.
+   Stats are keyed by Sleeper player id, so we keep a small
+   name -> id map for our 108 players rather than re-downloading
+   their whole player file (several MB) on every load.
+   ============================================================ */
+const SLEEPER_IDS_KEY = "league2026-sleeper-ids";
+const SLEEPER_TEAMS_KEY = "league2026-sleeper-teams";
+
+const Sleeper = (() => {
+  const BASE = "https://api.sleeper.app/v1";
+  let idMap  = null;   // normalised roster name -> sleeper id
+  let teamOf = null;   // sleeper id -> NFL team abbreviation (every player)
+  let sackKeyFound = null;
+  /* Names we have already looked for in Sleeper's file. A name that simply
+     isn't there — a camp arm, a practice-squad call-up — must not re-trigger
+     the multi-megabyte download on every poll. But a name we have never
+     looked for, such as a player just added to a roster, must. */
+  let triedNames = new Set();
+  const ambiguous = {};   // names Sleeper holds more than one record for
+
+  /* Sleeper has never documented a sack-yardage key publicly, so probe. */
+  const SACK_KEYS = ["pass_sack_yds","pass_sack_yd","pass_sacked_yds","pass_sack_yards"];
+
+  async function loadMaps(force){
+    if(idMap && teamOf && !force) return false;
+
+    if(!force && Store.mode !== "memory"){
+      try{
+        const [a,b] = await Promise.all([
+          Store.get(SLEEPER_IDS_KEY, SHARED),
+          Store.get(SLEEPER_TEAMS_KEY, SHARED)
+        ]);
+        const ids = a && a.value ? JSON.parse(a.value) : null;
+        const tms = b && b.value ? JSON.parse(b.value) : null;
+        if(ids && Object.keys(ids).length && tms && Object.keys(tms).length){
+          idMap = ids; teamOf = tms; return false;
+        }
+      }catch(e){ /* not cached */ }
+    }
+
+    /* one download builds both maps */
+    const all = await ESPN.getJSON(BASE + "/players/nfl");
+
+    /* what we are looking for, and what we know about each man */
+    const want = new Map();
+    TEAMS.forEach(t => toPlayers(t).forEach(p=>{
+      if(p.pos !== "DEF") want.set(ESPN.normName(p.name), { pos:p.pos, team:p.team });
+    }));
+
+    /* Names are not unique in Sleeper's file — there is a Josh Allen at
+       quarterback and another at linebacker, and retired players keep their
+       records. Collect every candidate, then choose on merit rather than
+       taking whichever happened to come first. */
+    const cands = new Map();
+    teamOf = {};
+    Object.keys(all).forEach(id=>{
+      const a = all[id];
+      if(!a) return;
+      if(a.team) teamOf[id] = a.team;
+      if(!a.first_name) return;
+      const key = ESPN.normName((a.first_name || "") + " " + (a.last_name || ""));
+      if(!want.has(key)) return;
+      if(!cands.has(key)) cands.set(key, []);
+      cands.get(key).push({ id, pos:a.position || "", team:a.team || "",
+                            active:a.active !== false });
+    });
+
+    const alias = ab => ESPN.TEAM_ALIAS[ab] || ab;
+    idMap = {};
+    want.forEach((meta, key)=>{
+      const list = cands.get(key);
+      if(!list || !list.length) return;
+      /* rank: right position and right team beats right position beats active */
+      const score = c => (c.pos === meta.pos ? 8 : 0)
+                       + ((c.team && (c.team === meta.team || alias(c.team) === alias(meta.team))) ? 4 : 0)
+                       + (c.active ? 2 : 0)
+                       + (c.team ? 1 : 0);
+      const best = list.slice().sort((a,b)=> score(b) - score(a))[0];
+      idMap[key] = best.id;
+      if(list.length > 1) ambiguous[key] = list.length;
+    });
+
+    if(Store.mode !== "memory"){
+      try{
+        await Store.set(SLEEPER_IDS_KEY,   JSON.stringify(idMap),  SHARED);
+        await Store.set(SLEEPER_TEAMS_KEY, JSON.stringify(teamOf), SHARED);
+      }catch(e){}
+    }
+    want.forEach((v,k)=> triedNames.add(k));   // everyone current has now been searched for
+    return true;                    // did hit the network
+  }
+
+  /* any rostered skill player we could not resolve to a Sleeper id */
+  function unresolved(){
+    const map = idMap || {};
+    const miss = [];
+    TEAMS.forEach(t => toPlayers(t).forEach(p=>{
+      if(p.pos !== "DEF" && !map[ESPN.normName(p.name)]) miss.push(p.name);
+    }));
+    return miss;
+  }
+
+  const sackKey = () => sackKeyFound;
+
+  async function week(season, w, sched){
+    const fresh = await loadMaps(false);
+
+    /* look for anyone rostered whose name we have never searched for */
+    const wanted = [];
+    TEAMS.forEach(t => toPlayers(t).forEach(pl=>{
+      if(pl.pos !== "DEF") wanted.push(ESPN.normName(pl.name));
+    }));
+    const untried = wanted.filter(n => !idMap[n] && !triedNames.has(n));
+
+    if(untried.length && !fresh){
+      await loadMaps(true);            // a roster changed — go and look once
+    }
+    wanted.forEach(n => triedNames.add(n));
+
+    const stats = await ESPN.getJSON(BASE + "/stats/nfl/regular/" + season + "/" + w);
+    const players = {}, defenses = {};
+
+    Object.keys(idMap).forEach(key=>{
+      const s = stats[idMap[key]];
+      if(!s) return;
+      players[key] = {
+        passYds: s.pass_yd || 0, passTD: s.pass_td || 0, intThrown: s.pass_int || 0,
+        rushYds: s.rush_yd || 0, rushTD: s.rush_td || 0,
+        recYds:  s.rec_yd  || 0, recTD:  s.rec_td  || 0, rec: s.rec || 0,
+        fgMade:  s.fgm || 0, fgAtt: s.fga || 0,
+        xpMade:  s.xpm || 0, xpAtt: s.xpa || 0,
+        fumLost: s.fum_lost || 0,
+        state: "post", detail: ""
+      };
+    });
+
+    /* ---- rebuild each team's offensive output from its players ----
+       Team rushing = every player's rushing yards.
+       Team net passing = every player's passing yards, less sack yardage,
+       which is how the NFL computes it. That gives us what the opposing
+       defence gave up without needing anyone's team-stat endpoint. */
+    const agg = {};
+    sackKeyFound = null;
+    Object.keys(stats).forEach(id=>{
+      const t = teamOf[id];
+      if(!t) return;                       // team defences and unknown ids
+      const s = stats[id];
+      if(!s) return;
+      const A = (agg[t] ||= { rush:0, pass:0, sackYds:0, giveaways:0 });
+      A.rush += s.rush_yd || 0;
+      A.pass += s.pass_yd || 0;
+      /* a team's giveaways are exactly what the opposing defence took away */
+      A.giveaways += (s.pass_int || 0) + (s.fum_lost || 0);
+      for(const k of SACK_KEYS){
+        if(s[k] != null){ A.sackYds += Number(s[k]) || 0; sackKeyFound = k; break; }
+      }
+    });
+
+    /* ---- team defences ---- */
+    TEAMS.forEach(t => toPlayers(t).forEach(p=>{
+      if(p.pos !== "DEF") return;
+      const alt = ESPN.TEAM_ALIAS[p.team];
+      const s = stats[p.team] || (alt ? stats[alt] : null);
+
+      /* who did they play? taken from the week's schedule */
+      const g = sched ? (sched[p.team] || (alt ? sched[alt] : null)) : null;
+      const oppAbbr = g && !g.bye ? g.opp : null;
+      const oppAgg = oppAbbr
+        ? (agg[oppAbbr] || agg[ESPN.TEAM_ALIAS[oppAbbr]] || null)
+        : null;
+
+      if(!s && !oppAgg) return;            // nothing at all for this defence
+
+      const haveYards = !!oppAgg;
+      /* Points allowed: prefer Sleeper's own figure, else the scoreboard.
+         Takeaways: prefer Sleeper's, else the opponent's giveaways summed
+         from their players — covers any week Sleeper ships no DST entry. */
+      const ptsAllowed = (s && s.pts_allow != null) ? s.pts_allow
+                       : (g && g.oppScore != null ? g.oppScore : 99);
+      const takeaways  = s ? (s.int || 0) + (s.fum_rec || 0)
+                       : (haveYards ? oppAgg.giveaways : 0);
+
+      /* defensive and special-teams touchdowns are only in the DST entry */
+      const missingTD = !s;
+
+      defenses[ESPN.normName(p.name)] = {
+        takeaways,
+        defTD:     s ? (s.def_td || 0) + (s.def_st_td || 0) : 0,
+        safeties:  s ? (s.safe || 0) : 0,
+        ptsAllowed,
+        rushYdsAllowed: haveYards ? oppAgg.rush : 999,
+        passYdsAllowed: haveYards ? Math.max(0, oppAgg.pass - oppAgg.sackYds) : 999,
+        opp: oppAbbr || "",
+        sackYds: haveYards ? oppAgg.sackYds : 0,
+        derived: haveYards,
+        noDst: missingTD,
+        ptsFromBoard: !(s && s.pts_allow != null) && g && g.oppScore != null,
+        partial: !haveYards,
+        state: "post", detail: ""
+      };
+    }));
+
+    return { players, defenses, agg };
+  }
+
+  const idOf = k => idMap ? idMap[k] : undefined;
+  return { week, loadMaps, unresolved, sackKey, idOf, ambiguous };
+})();
+
+/* ============================================================
+   FEED STATE
+   ============================================================ */
+const Feed = {
+  on: false,
+  provider: "auto",     // auto | sleeper | espn
+  source: "",           // which one actually answered
+  softError: "",
+  week: null,
+  status: "off",        // off | loading | live | done | error
+  message: "",
+  error: "",
+  players: {},          // normName -> stat line
+  defenses: {},         // normName -> stat line
+  games: [],
+  gameCache: {},        // eventId -> { state, at, parsed }
+  lastPull: null,
+  timer: null,
+  busy: false
+};
+
+/* look up a rostered player's live stat line */
+function feedLineFor(player){
+  const key = ESPN.normName(player.name);
+  if (player.pos === "DEF"){
+    return Feed.defenses[key] || null;
+  }
+  return Feed.players[key] || null;
+}
+
+/* live points for one rostered player, or null if the feed has nothing */
+function feedPointsFor(player){
+  const line = feedLineFor(player);
+  if (!line) return null;
+  const res = Score.forPosition(player.pos, line);
+  if (!res) return null;
+  return { pts: res.pts, parts: res.parts, state: line.state, detail: line.detail, line };
+}
+
+/* a compact stat line for display under a name */
+function feedStatText(player){
+  const l = feedLineFor(player);
+  if (!l) return "";
+  if (player.pos === "DEF"){
+    /* 999 / 99 are internal "no data" sentinels — never show them as numbers */
+    const ru = l.rushYdsAllowed >= 999 ? "rush n/a" : l.rushYdsAllowed + " ru";
+    const pa = l.passYdsAllowed >= 999 ? "pass n/a" : l.passYdsAllowed + " pa yds";
+    const pt = l.ptsAllowed >= 99 ? "pts n/a" : l.ptsAllowed + " pa";
+    return `${pt} · ${ru} · ${pa} · ${l.takeaways} TO` +
+           (l.defTD ? ` · ${l.defTD} TD` : "") + (l.safeties ? ` · ${l.safeties} saf` : "") +
+           (l.opp ? ` · vs ${l.opp}` : "") +
+           (l.sackYds ? ` · less ${l.sackYds} sack yds` : "") +
+           (l.derived ? " · summed from players" : "") +
+           (l.ptsFromBoard ? " · pts from scoreboard" : "") +
+           (l.noDst ? " · no def TD/safety data" : "") +
+           (l.partial ? " · NO OPPONENT STATS — enter by hand" : "");
+  }
+  if (player.pos === "K"){
+    return `${l.fgMade}/${l.fgAtt} FG · ${l.xpMade}/${l.xpAtt} XP`;
+  }
+  const bits = [];
+  if (l.passYds || l.passTD) bits.push(`${l.passYds} pass${l.passTD ? ", " + l.passTD + " TD" : ""}`);
+  if (l.rushYds || l.rushTD) bits.push(`${l.rushYds} rush${l.rushTD ? ", " + l.rushTD + " TD" : ""}`);
+  if (l.rec || l.recYds || l.recTD) bits.push(`${l.rec} rec, ${l.recYds} yds${l.recTD ? ", " + l.recTD + " TD" : ""}`);
+  return bits.join(" · ");
+}
+
+/* which NFL teams do we actually care about this week? */
+function neededNflTeams(){
+  const set = new Set();
+  TEAMS.forEach(t => t.roster.forEach(r => {
+    const a = r[1];
+    set.add(a);
+    if (ESPN.TEAM_ALIAS[a]) set.add(ESPN.TEAM_ALIAS[a]);
+  }));
+  return set;
+}
+
+/* one summary per game — ESPN's only route to per-player stats */
+async function pullEspn(relevant){
+  const toFetch = relevant.filter(e => {
+    const c = Feed.gameCache[e.id];
+    if(!c) return true;
+    if(c.state === "post" && e.state === "post") return false;   // final and cached
+    return true;
+  });
+
+  await ESPN.mapLimit(toFetch, 3, async e => {
+    const j = await ESPN.getJSON(ESPN.summaryURL(e.id));
+    const parsed = ESPN.parseSummary(j);
+    Feed.gameCache[e.id] = { state: e.state, at: Date.now(), parsed };
+    return parsed;
+  });
+
+  const players = {}, defenses = {};
+  relevant.forEach(e => {
+    const c = Feed.gameCache[e.id];
+    if(!c) return;
+    Object.assign(players,  c.parsed.players);
+    Object.assign(defenses, c.parsed.defenses);
+  });
+  return { players, defenses };
+}
+
+async function pullFeed(week, manual){
+  if (Feed.busy) return;
+  Feed.busy = true;
+  Feed.week = week;
+  Feed.status = "loading";
+  Feed.error = "";
+  Feed.softError = "";
+  renderLiveBar();
+
+  try {
+    const events = await ESPN.weekEvents(week);
+    Feed.games = events;
+
+    const want = neededNflTeams();
+    const relevant = events.filter(e =>
+      e.state !== "pre" && e.teams.some(a => want.has(a))
+    );
+
+    if(Feed.provider === "sleeper" || Feed.provider === "auto"){
+      /* the defence ladders need to know who each team played */
+      await fetchWeekSchedule(week);
+      const sched = schedule[schedKey(week)] || null;
+
+      let sleeperOK = false;
+      try{
+        const s = await Sleeper.week(ESPN.SEASON, week, sched);
+        Feed.players  = s.players;
+        Feed.defenses = s.defenses;
+        Feed.source   = "Sleeper";
+        sleeperOK = Object.keys(s.players).length > 0;
+        if(!sleeperOK) Feed.softError = "Sleeper returned no lines for this week — using ESPN.";
+      }catch(err){
+        if(Feed.provider === "sleeper") throw err;
+        Feed.softError = "Sleeper unavailable (" + (err.message || err) + ") — fell back to ESPN.";
+      }
+
+      /* Whatever the chosen source, a defence with no opponent yardage is
+         useless. Top those up from ESPN box scores — this is the preseason
+         case, where Sleeper publishes thin or no team data. */
+      if(!sleeperOK && Feed.provider === "auto"){
+        const espn = await pullEspn(relevant);
+        Feed.players = espn.players; Feed.defenses = espn.defenses; Feed.source = "ESPN";
+      } else if(sleeperOK && Feed.provider === "auto"){
+        /* Which rostered defences still lack usable numbers? A defence can be
+           missing outright (Sleeper had neither a DST entry nor opponent
+           players) as well as merely incomplete, so check the roster rather
+           than what happens to be in the map. */
+        const rosterDefs = [];
+        TEAMS.forEach(t => toPlayers(t).forEach(p=>{
+          if(p.pos === "DEF") rosterDefs.push({ key: ESPN.normName(p.name), team: p.team });
+        }));
+        const needy = rosterDefs.filter(({key, team})=>{
+          /* a defence on bye, or whose game has not kicked off, is not missing
+             data — do not spend box-score requests chasing it */
+          const alt = ESPN.TEAM_ALIAS[team];
+          const g = sched ? (sched[team] || (alt ? sched[alt] : null)) : null;
+          if(!g || g.bye || g.state === "pre") return false;
+          const d = Feed.defenses[key];
+          return !d || d.partial ||
+                 d.rushYdsAllowed >= 999 || d.passYdsAllowed >= 999;
+        });
+        const needyTeams = new Set(needy.map(x => x.team));
+        const needyKeys  = needy.map(x => x.key);
+
+        if(needyKeys.length && relevant.length){
+          /* pull only the games those defences played in, not the whole slate */
+          const needTeams = new Set();
+          needyTeams.forEach(t=>{
+            needTeams.add(t);
+            if(ESPN.TEAM_ALIAS[t]) needTeams.add(ESPN.TEAM_ALIAS[t]);
+          });
+          const needGames = relevant.filter(e => e.teams.some(a => needTeams.has(a)));
+          const espn = await pullEspn(needGames.length ? needGames : relevant);
+          let filled = 0;
+          needyKeys.forEach(k=>{
+            if(espn.defenses[k]){ Feed.defenses[k] = espn.defenses[k]; filled++; }
+          });
+          if(filled){
+            Feed.source = "Sleeper + ESPN";
+            Feed.softError = "Sleeper had no opponent stats for " + filled +
+              " defence(s) this week, so those were scored from ESPN box scores instead.";
+          }
+        }
+        /* carry live game state from the schedule without extra requests */
+        if(sched){
+          Object.keys(Feed.players).forEach(k=>{
+            const tm = Feed.players[k].team;
+            const g = tm ? sched[tm] : null;
+            if(g){ Feed.players[k].state = g.state; Feed.players[k].detail = g.detail; }
+          });
+        }
+      }
+    } else {
+      const espn = await pullEspn(relevant);
+      Feed.players = espn.players;
+      Feed.defenses = espn.defenses;
+      Feed.source = "ESPN";
+    }
+
+    Feed.lastPull = Date.now();
+
+    const anyLive = events.some(e => e.state === "in");
+    const anyDone = events.some(e => e.state === "post");
+    Feed.status = anyLive ? "live" : (anyDone ? "done" : "off");
+    Feed.message = anyLive
+      ? events.filter(e=>e.state==="in").length + " game(s) in progress"
+      : (anyDone ? "All games final" : "No games have kicked off yet");
+
+  } catch (err) {
+    Feed.status = "error";
+    Feed.error = String(err && err.message || err);
+  } finally {
+    Feed.busy = false;
+    renderLiveBar();
+    captureWeek(Feed.week);
+    applyFeedToSheet();
+    if(isEditing()) paintFeedValues();
+    else renderMatchups();
+    renderCardOnly();
+    if(!isEditing()) renderRoster();   // never redraw a field being typed in
+  }
+}
+
+/* ---------- backfill: walk the season and bank every week ---------- */
+let capturing = false;
+async function captureSeason(){
+  if(capturing || Feed.busy) return;
+  capturing = true;
+  const btn = document.getElementById("seasonPull");
+  const back = matchWeek;
+  let banked = 0, skipped = 0;
+
+  const sig = rosterSig();
+  for(let w = 1; w <= 17; w++){
+    /* A finished week is only settled if it was banked against today's rosters.
+       A mid-season pickup needs his earlier weeks fetched too. */
+    if(weekDone[w] && weekRoster[w] === sig){ skipped++; continue; }
+    if(btn) btn.textContent = "Reading week " + w + "…";
+    await pullFeed(w, true);
+    if(Feed.status === "error") break;
+    const games = Feed.games || [];
+    /* nothing has kicked off this week — the season has not reached it yet */
+    if(games.length && games.every(e => e.state === "pre")) break;
+    banked++;
+    await new Promise(r => setTimeout(r, 300));      // undocumented API, go gently
+  }
+
+  capturing = false;
+  if(btn) btn.textContent = "Bank season to date";
+  Feed.week = back;
+  await pullFeed(back, true);
+  note(banked
+    ? `Banked ${banked} week${banked===1?"":"s"}${skipped?`, skipped ${skipped} already stored`:""}.`
+    : (skipped ? `Nothing new — ${skipped} week${skipped===1?" is":"s are"} already stored.`
+               : "No completed games found yet."));
+  renderRoster();
+}
+
+function startFeed(){
+  stopFeed();
+  Feed.timer = setInterval(() => {
+    if (document.hidden) return;
+    if (Feed.status === "live" || Feed.status === "loading") pullFeed(matchWeek, false);
+  }, 45000);
+}
+function stopFeed(){
+  if (Feed.timer) clearInterval(Feed.timer);
+  Feed.timer = null;
+}
+
+/* ============================================================
+   APP STATE
+   ============================================================ */
+let teamIndex = 0;
+let week = 1;
+let card = {};
+let activeSlot = "QB";
+let justWritten = null;
+
+/* shared store */
+let lineups = {};   // lineups[week][team] = {slot: playerName}
+let pts     = {};   // pts[week][team]     = {slot: points}
+let manual  = {};   // manual[week][team]  = {slot: true}  -> typed by hand, feed must not touch
+
+const lineupOf = (w,t) => (((lineups[w] ||= {})[t] ||= {}));
+const ptsOf    = (w,t) => (((pts[w]    ||= {})[t] ||= {}));
+const manualOf = (w,t) => (((manual[w] ||= {})[t] ||= {}));
+const playerByName = (t,name) => toPlayers(TEAMS[t]).find(p=>p.name===name);
+
+function loadCardFromStore(){
+  const L = lineupOf(week, teamIndex);
+  card = {};
+  Object.keys(L).forEach(k=>{
+    const p = playerByName(teamIndex, L[k]);
+    if(p) card[k] = p;
+  });
+}
+function pushCard(){
+  const L = {};
+  Object.keys(card).forEach(k => L[k] = card[k].name);
+  (lineups[week] ||= {})[teamIndex] = L;
+  saveAll(teamIndex);
+}
+
+/* ---------- owner cards ---------- */
+function renderOwners(){
+  document.getElementById("ownerGrid").innerHTML = TEAMS.map((t,i)=>{
+    const counts = {};
+    t.roster.forEach(p => counts[p[2]] = (counts[p[2]]||0)+1);
+    const chips = Object.keys(counts)
+      .sort((a,b)=>POS_ORDER[a]-POS_ORDER[b])
+      .map(p=>`<span class="pos pos-${p}">${counts[p]} ${p}</span>`).join("");
+    return `<button class="owner" data-team="${i}">
+      <div class="slot">Pick #${t.slot}</div>
+      <div class="who">${t.owner}</div>
+      <div class="mix">${chips}</div>
+    </button>`;
+  }).join("");
+  document.querySelectorAll(".owner").forEach(b=>{
+    b.addEventListener("click",()=>{
+      selectRoster(+b.dataset.team);
+      scrollToEl(document.getElementById("rosters"));
+    });
+  });
+}
+
+/* ---------- roster tabs + table ---------- */
+let rosterIndex = 0;
+function renderTabs(){
+  document.getElementById("rosterTabs").innerHTML = TEAMS.map((t,i)=>
+    `<button class="tab" role="tab" id="tab-${i}" aria-selected="${i===rosterIndex}" data-team="${i}">${t.owner} #${t.slot}</button>`
+  ).join("");
+  document.querySelectorAll(".tab").forEach(b=>{
+    b.addEventListener("click",()=>selectRoster(+b.dataset.team));
+  });
+}
+function selectRoster(i){
+  rosterIndex = i;
+  editingMove = null;
+  tradeOpen = false; tradePartner = null; tradeReset();
+  showRosterGate(false);
+  note("");
+  document.querySelectorAll(".tab").forEach(b=>
+    b.setAttribute("aria-selected", (+b.dataset.team===i).toString()));
+  renderRoster();
+}
+function renderRoster(){
+  let players = toPlayers(TEAMS[rosterIndex]);
+  const feedLive = Feed.on && (Feed.status === "live" || Feed.status === "done");
+  const wk = matchWeek;
+
+  const season = new Map(players.map(p => [p.name, playerSeason(p, rosterIndex)]));
+  if(rosterSort === "pts"){
+    players = players.slice().sort((a,b)=>
+      (season.get(b.name).total - season.get(a.name).total) || a.pick - b.pick);
+  } else if(rosterSort === "pos"){
+    /* football order — QB, RB, WR, TE, K, DEF — and inside each group the
+       biggest season scorer first, so the top of every block is your starter */
+    players = players.slice().sort((a,b)=>
+      (POS_ORDER[a.pos] - POS_ORDER[b.pos]) ||
+      (season.get(b.name).total - season.get(a.name).total) ||
+      a.pick - b.pick);
+  }
+
+  document.getElementById("rosterBody").innerHTML = players.map(p=>{
+    let match = '<span class="dash">—</span>';
+    if (feedLive){
+      const l = feedLineFor(p);
+      match = l ? '<span class="ok">✓</span>' : '<span class="no">?</span>';
+    }
+    const s  = season.get(p.name);
+    const wv = playerWeekPts(p, wk);
+    const open = expandedPlayer === p.name;
+
+    const row = `
+    <tr class="prow${open?" open":""}" data-player="${esc(p.name)}">
+      <td class="pick">${p.pick}</td>
+      <td class="pname">${esc(p.name)}</td>
+      <td class="pteam col-div">${editingRoster
+        ? `<input class="cell-in team" data-row="${p.pick-1}" data-fld="team" type="text" maxlength="3"
+                 value="${esc(p.team)}" aria-label="NFL team for ${esc(p.name)}">`
+        : esc(p.team)}</td>
+      <td class="col-div">${editingRoster
+        ? `<select class="cell-in pos" data-row="${p.pick-1}" data-fld="pos" aria-label="Position for ${esc(p.name)}">` +
+          ["QB","RB","WR","TE","K","DEF"].map(x=>`<option value="${x}" ${x===p.pos?"selected":""}>${x}</option>`).join("") +
+          `</select>`
+        : `<span class="pos pos-${p.pos}">${p.pos}</span>`}</td>
+      <td class="pbye col-div">${editingRoster
+        ? `<input class="cell-in bye" data-row="${p.pick-1}" data-fld="bye" type="number" min="1" max="18"
+                 value="${p.bye || ""}" placeholder="—" aria-label="Bye week for ${esc(p.name)}">`
+        : (p.bye || "—")}</td>
+      <td class="pmatch col-div">${match}</td>
+      <td class="pwk col-div">${wv === null ? '<span class="dash">—</span>' : wv}</td>
+      <td class="pseason col-div">${s.weeks
+        ? `<b>${s.total}</b>` + (s.midSeason
+            ? `<i class="since">${s.since} since wk ${s.from}</i>`
+            : `<i>${s.weeks} wk</i>`)
+        : '<span class="dash">—</span>'}</td>
+      <td class="rm-col"><button class="rm" data-drop="${p.pick-1}" title="Drop ${esc(p.name)}" aria-label="Drop ${esc(p.name)}">&times;</button></td>
+    </tr>`;
+
+    if(!open) return row;
+
+    let cells = "";
+    for(let w = 1; w <= 17; w++){
+      const v = playerWeekPts(p, w);
+      const bye = p.bye === w;
+      const pre = w < s.from;                    // before he joined this roster
+      cells += `<span class="wk-cell${v===null ? (bye?" bye":" none") : ""}` +
+               `${pre?" pre":""}${w===wk?" now":""}"${pre?' title="Before he joined this roster"':""}>` +
+               `<i>${w}</i><b>${v === null ? (bye ? "bye" : "·") : v}</b></span>`;
+    }
+    return row + `
+    <tr class="pdetail"><td colspan="9">
+      <div class="wk-strip-in">${cells}</div>
+      <p class="wk-note">${s.weeks
+        ? `${s.total} points over ${s.weeks} scored week${s.weeks===1?"":"s"} &middot; best week ${s.best} &middot; average ${(s.total/s.weeks).toFixed(1)}`
+          + (s.midSeason
+             ? `<br><b>Joined in week ${s.from}</b> &middot; ${s.since} point${s.since===1?"":"s"} for ${esc(TEAMS[rosterIndex].owner)} over ${s.sinceWeeks} week${s.sinceWeeks===1?"":"s"} &middot; faded weeks came before that.`
+             : "")
+        : "Nothing banked for this player yet — turn the live feed on, then use Bank season to date."}</p>
+    </td></tr>`;
+  }).join("");
+
+  document.getElementById("wkColHead").textContent = "Wk " + wk;
+  const sortBtn = document.getElementById("sortToggle");
+  sortBtn.textContent = SORT_LABEL[rosterSort];
+  sortBtn.setAttribute("aria-pressed", rosterSort !== "pick");
+  sortBtn.title = "Sorting by " +
+    (rosterSort === "pick" ? "draft order" : rosterSort === "pos" ? "position" : "season points") +
+    " — tap to change";
+
+  document.querySelectorAll(".prow").forEach(tr=>{
+    tr.addEventListener("click", e=>{
+      /* the edit fields and the drop button live inside the row — clicking
+         them must not expand it, or the rebuild eats the field you clicked */
+      if(e.target.closest(".rm, .cell-in, input, select, button")) return;
+      const nm = tr.dataset.player;
+      expandedPlayer = (expandedPlayer === nm) ? null : nm;
+      renderRoster();
+    });
+  });
+
+  const n = players.length;
+  const cnt = document.getElementById("rosterCount");
+  cnt.textContent = `${TEAMS[rosterIndex].owner} — ${n} of 18 players${n>=18?" · roster full":""}`;
+  cnt.className = "rcount" + (n>=18 ? " full" : "");
+  document.getElementById("rosterWrap").classList.toggle("editing", editingRoster);
+  document.getElementById("addBar").hidden = !editingRoster;
+  const tt = document.getElementById("tradeToggle");
+  if(tt) tt.hidden = !editingRoster;
+  if(!editingRoster && tradeOpen){ tradeOpen = false; tradeReset(); }
+  const tb = document.getElementById("tradeBar");
+  if(tb) tb.hidden = !tradeOpen;
+  document.getElementById("editToggle").textContent = editingRoster ? "Done editing" : "Edit roster";
+  document.getElementById("editToggle").setAttribute("aria-pressed", editingRoster);
+  document.getElementById("addPlayer").disabled = n>=18;
+
+  renderLedger();
+
+  document.querySelectorAll(".cell-in").forEach(el=>{
+    el.addEventListener("change", ()=>{
+      const idx = +el.dataset.row, fld = el.dataset.fld;
+      const row = TEAMS[rosterIndex].roster[idx];
+      if(!row) return;
+      const was = row.slice();
+
+      if(fld === "team"){
+        row[1] = (el.value.trim() || "FA").toUpperCase();
+      } else if(fld === "pos"){
+        row[2] = el.value;
+      } else {
+        const v = el.value === "" ? 0 : Math.max(0, Math.min(18, Number(el.value) || 0));
+        row[3] = v;
+      }
+      if(row[1] === was[1] && row[2] === was[2] && row[3] === was[3]) return;
+
+      /* a correction to a player already on the roster is not a move —
+         nothing is written to the ledger and no transaction is spent */
+      const what = fld === "team" ? `now on ${row[1]}`
+                 : fld === "pos"  ? `now listed at ${row[2]}`
+                 : (row[3] ? `bye week ${row[3]}` : "no bye week");
+      note(`${row[0]} — ${what}. Correction only, not a transaction.`);
+
+      if(fld === "pos"){
+        afterRosterChange();          // may strand a starter, so redraw everything
+      } else {
+        /* leave the roster table alone so tabbing between fields keeps working */
+        saveAll(rosterIndex);
+        renderOwners();
+        loadCardFromStore();
+        renderCard();
+        renderMatchups();
+        if(Feed.on){
+          clearTimeout(rosterPullTimer);
+          rosterPullTimer = setTimeout(()=> pullFeed(matchWeek, true), 900);
+        }
+      }
+    });
+    el.addEventListener("keydown", e=>{ if(e.key === "Enter") el.blur(); });
+  });
+
+  document.querySelectorAll(".rm").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const idx = +b.dataset.drop;
+      const row = TEAMS[rosterIndex].roster[idx];
+      const gone = row[0];
+      logMove("drop", row);
+      TEAMS[rosterIndex].roster.splice(idx,1);
+      delete acqOf(rosterIndex)[gone];
+      note(`Dropped ${gone}. Logged below as a roster move.`);
+      afterRosterChange();
+    });
+  });
+}
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+
+let editingRoster = false;
+let rosterSort = "pick";      // "pick" | "pos" | "pts"
+const SORT_CYCLE = ["pick","pos","pts"];
+const SORT_LABEL = { pick:"Sort: draft", pos:"Sort: position", pts:"Sort: points" };
+let expandedPlayer = null;
+let moves = {};
+const movesOf = t => (moves[t] ||= []);
+
+function logMove(kind, row){
+  movesOf(rosterIndex).push({
+    k: kind, name: row[0], team: row[1], pos: row[2], bye: row[3] ?? 0, at: Date.now()
+  });
+}
+
+function stamp(ms){
+  const d = new Date(ms);
+  return d.toLocaleDateString(undefined,{month:"short",day:"numeric"}) + " · " +
+         d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
+}
+
+let editingMove = null;
+
+function renameInLineups(t, oldName, newName){
+  Object.keys(lineups).forEach(w=>{
+    const L = lineups[w]?.[t]; if(!L) return;
+    Object.keys(L).forEach(k=>{ if(L[k] === oldName) L[k] = newName; });
+  });
+}
+
+function undoMove(i){
+  const log = movesOf(rosterIndex);
+  const m = log[i];
+  const roster = TEAMS[rosterIndex].roster;
+
+  if(m.k === "add"){
+    const idx = roster.findIndex(r => r[0] === m.name);
+    if(idx > -1) roster.splice(idx, 1);
+    delete acqOf(rosterIndex)[m.name];
+    note(`Cancelled — ${m.name} is off ${TEAMS[rosterIndex].owner}'s roster again.`);
+  } else {
+    if(roster.length >= 18){
+      note(`Can't put ${m.name} back — the roster is already at 18.`, true);
+      return;
+    }
+    if(!roster.some(r => r[0].toLowerCase() === m.name.toLowerCase())){
+      roster.push([m.name, m.team, m.pos, m.bye || 0]);
+    }
+    note(`Cancelled — ${m.name} is back on the roster, added at the end of the list.`);
+  }
+  log.splice(i, 1);
+  editingMove = null;
+  afterRosterChange();
+}
+
+function saveMoveEdit(i){
+  const log = movesOf(rosterIndex);
+  const m = log[i];
+  const roster = TEAMS[rosterIndex].roster;
+  const row = document.querySelector(`.move-edit[data-i="${i}"]`);
+  const name = row.querySelector(".e-name").value.trim();
+  const team = (row.querySelector(".e-team").value.trim() || "FA").toUpperCase();
+  const pos  = row.querySelector(".e-pos").value;
+  const byeV = row.querySelector(".e-bye").value;
+  const bye  = byeV === "" ? 0 : Number(byeV);
+
+  if(!name){ note("A move needs a player name.", true); return; }
+  const clash = TEAMS.some((t,ti)=> t.roster.some(r =>
+    r[0].toLowerCase() === name.toLowerCase() && !(ti === rosterIndex && r[0] === m.name)));
+  if(clash){ note(`${name} is already rostered somewhere in the league.`, true); return; }
+
+  const idx = roster.findIndex(r => r[0] === m.name);
+  if(idx > -1) roster[idx] = [name, team, pos, bye];
+  if(name !== m.name){
+    renameInLineups(rosterIndex, m.name, name);
+    const A = acqOf(rosterIndex);
+    if(A[m.name] !== undefined){ A[name] = A[m.name]; delete A[m.name]; }
+  }
+
+  Object.assign(m, { name, team, pos, bye });
+  editingMove = null;
+  note(`Move corrected — logged as ${m.k === "add" ? "added" : "dropped"} ${name}.`);
+  afterRosterChange();
+}
+
+/* League rule 5: five transactions a season, each one either a roster
+   addition or a trade. A trade has no player limit, so however many men
+   change hands it still costs exactly one. */
+function transactionsUsed(t){
+  const log = movesOf(t);
+  const adds = log.filter(m=>m.k==="add").length;
+  const trades = new Set(log.filter(m=>m.k==="trade").map(m=>m.tradeId)).size;
+  return { adds, trades, total: adds + trades };
+}
+
+/* reverse a whole trade, putting every player back where he came from */
+function undoTrade(tradeId){
+  const legs = movesOf(rosterIndex).filter(m=>m.tradeId === tradeId);
+  if(!legs.length) return;
+  const other = legs[0].with;
+
+  /* Everything moves at once, so judge the net size after the whole reversal.
+     A released man comes back; a free-agent signing goes away again. */
+  const theirLegs = (moves[other] || []).filter(m=>m.tradeId === tradeId);
+  const delta = ls => ls.filter(l=>l.dir==="out" || l.dir==="drop").length
+                    - ls.filter(l=>l.dir==="in"  || l.dir==="fa").length;
+  const netMe   = TEAMS[rosterIndex].roster.length + delta(legs);
+  const netThem = TEAMS[other].roster.length       + delta(theirLegs);
+  if(netMe > 18 || netThem > 18){
+    const who = netMe > 18 ? TEAMS[rosterIndex].owner : TEAMS[other].owner;
+    note(`Can't undo — ${who} would be over 18. Drop someone first.`, true);
+    return;
+  }
+
+  const undoLeg = (leg, owner)=>{
+    if(leg.dir === "drop"){                       // put the released man back
+      if(!TEAMS[owner].roster.some(r=>r[0]===leg.name))
+        TEAMS[owner].roster.push([leg.name, leg.team, leg.pos, leg.bye||0]);
+      delete acqOf(owner)[leg.name];
+      return;
+    }
+    if(leg.dir === "fa"){                         // un-sign the free agent
+      const i = TEAMS[owner].roster.findIndex(r=>r[0]===leg.name);
+      if(i > -1) TEAMS[owner].roster.splice(i,1);
+      delete acqOf(owner)[leg.name];
+      return;
+    }
+    const from = leg.dir === "out" ? other : rosterIndex;
+    const to   = leg.dir === "out" ? rosterIndex : other;
+    const i = TEAMS[from].roster.findIndex(r=>r[0]===leg.name);
+    const row = i > -1 ? TEAMS[from].roster.splice(i,1)[0]
+                       : [leg.name, leg.team, leg.pos, leg.bye||0];
+    if(!TEAMS[to].roster.some(r=>r[0]===leg.name)) TEAMS[to].roster.push(row);
+    delete acqOf(from)[leg.name];
+    delete acqOf(to)[leg.name];
+  };
+  legs.filter(l=>l.dir==="out"||l.dir==="in").forEach(l=> undoLeg(l, rosterIndex));
+  legs.filter(l=>l.dir==="drop"||l.dir==="fa").forEach(l=> undoLeg(l, rosterIndex));
+  theirLegs.filter(l=>l.dir==="drop"||l.dir==="fa").forEach(l=> undoLeg(l, other));
+
+  [rosterIndex, other].forEach(t=>{
+    moves[t] = (moves[t] || []).filter(m=>m.tradeId !== tradeId);
+  });
+  note(`Trade with ${TEAMS[other].owner} reversed. The transaction is refunded to both teams.`);
+  saveAll(rosterIndex); saveAll(other);
+  afterRosterChange();
+}
+
+function renderLedger(){
+  const log = movesOf(rosterIndex);
+  const u = transactionsUsed(rosterIndex);
+  const usedEl = document.getElementById("movesUsed");
+  const parts = [];
+  if(u.adds)   parts.push(`${u.adds} addition${u.adds===1?"":"s"}`);
+  if(u.trades) parts.push(`${u.trades} trade${u.trades===1?"":"s"}`);
+  usedEl.textContent = `${TEAMS[rosterIndex].owner} · ${u.total} of 5 transactions used` +
+                       (parts.length ? ` (${parts.join(", ")})` : "");
+  usedEl.className = "used" + (u.total>=5 ? " maxed" : "");
+
+  const list = document.getElementById("ledgerList");
+  if(!log.length){
+    list.innerHTML = `<div class="ledger-empty">No moves yet — ${TEAMS[rosterIndex].owner} is standing pat with the draft-night roster.</div>`;
+    return;
+  }
+
+  /* collapse each trade into one entry, however many players it moved */
+  const seenTrades = new Set();
+  list.innerHTML = log.map((m,i)=>[m,i]).reverse().map(([m,i])=>{
+    if(m.k === "trade"){
+      if(seenTrades.has(m.tradeId)) return "";
+      seenTrades.add(m.tradeId);
+      const legs = log.filter(x=>x.tradeId === m.tradeId);
+      const outs = legs.filter(x=>x.dir==="out"), ins = legs.filter(x=>x.dir==="in");
+      const rel  = legs.filter(x=>x.dir==="drop"), sig = legs.filter(x=>x.dir==="fa");
+      const side = (arr,lbl) => arr.length
+        ? `<span class="tleg"><i>${lbl}</i>${arr.map(x=>esc(x.name)).join(", ")}</span>` : "";
+      return `<div class="move trade">
+        <span class="mkind trade">Trade</span>
+        <span class="mmeta">with ${esc(TEAMS[m.with]?.owner || "?")}${m.week?" · week "+m.week:""} · 1 transaction</span>
+        <span class="tlegs">${side(outs,"out ")}${side(ins,"in ")}${side(rel,"released ")}${side(sig,"signed ")}</span>
+        <span class="mwhen">${stamp(m.at)}</span>
+        <span class="move-actions">
+          <button class="tiny undo" data-undotrade="${esc(m.tradeId)}">Undo trade</button>
+        </span>
+      </div>`;
+    }
+    if(editingMove === i){
+      const opts = ["QB","RB","WR","TE","K","DEF"].map(p=>
+        `<option value="${p}" ${p===m.pos?"selected":""}>${p}</option>`).join("");
+      return `<div class="move-edit" data-i="${i}">
+        <span class="mkind ${m.k}">${m.k === "drop" ? "Dropped" : "Added"}</span>
+        <input class="fld name e-name" type="text" value="${esc(m.name)}" aria-label="Player name">
+        <input class="fld team e-team" type="text" maxlength="3" value="${esc(m.team)}" aria-label="NFL team">
+        <select class="fld pos e-pos" aria-label="Position">${opts}</select>
+        <input class="fld bye e-bye" type="number" min="1" max="18" value="${m.bye || ""}" placeholder="Bye" aria-label="Bye week">
+        <button class="mini solid" data-save="${i}">Save</button>
+        <button class="mini" data-cancel="${i}">Cancel</button>
+      </div>`;
+    }
+    return `<div class="move">
+      <span class="mkind ${m.k}">${m.k === "drop" ? "Dropped" : "Added"}</span>
+      <span class="mwho">${esc(m.name)}</span>
+      <span class="mmeta">${esc(m.team)} · ${m.pos}${m.bye ? " · bye " + m.bye : ""}</span>
+      <span class="mwhen">${stamp(m.at)}</span>
+      <span class="move-actions">
+        <button class="tiny" data-edit="${i}">Edit</button>
+        <button class="tiny undo" data-undo="${i}">${m.k === "add" ? "Cancel add" : "Undo drop"}</button>
+      </span>
+    </div>`;
+  }).join("");
+
+  list.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>{
+    editingMove = +b.dataset.edit; note(""); renderLedger();
+  }));
+  list.querySelectorAll("[data-cancel]").forEach(b=>b.addEventListener("click",()=>{
+    editingMove = null; note(""); renderLedger();
+  }));
+  list.querySelectorAll("[data-save]").forEach(b=>b.addEventListener("click",()=> saveMoveEdit(+b.dataset.save)));
+  list.querySelectorAll("[data-undo]").forEach(b=>b.addEventListener("click",()=> undoMove(+b.dataset.undo)));
+  list.querySelectorAll("[data-undotrade]").forEach(b=>
+    b.addEventListener("click",()=> undoTrade(b.dataset.undotrade)));
+}
+
+function note(msg, bad){
+  ["addNote","ledgerNote"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.textContent = msg || "";
+    el.className = "addnote" + (bad ? " bad" : "");
+    el.hidden = !msg;
+  });
+}
+
+/* drop any lineup entry pointing at a player who is no longer rostered */
+function purgeOrphanPoints(){
+  Object.keys(pts).forEach(w=>{
+    Object.keys(pts[w] || {}).forEach(t=>{
+      Object.keys(pts[w][t]).forEach(k=>{
+        if(!(lineups[w] && lineups[w][t] && lineups[w][t][k])){
+          delete pts[w][t][k];
+          if(manual[w] && manual[w][t]) delete manual[w][t][k];
+        }
+      });
+    });
+  });
+}
+
+function purgeLineups(){
+  Object.keys(lineups).forEach(w=>{
+    Object.keys(lineups[w]).forEach(t=>{
+      const roster = TEAMS[t]?.roster || [];
+      const onRoster = new Set(roster.map(r=>r[0]));
+      Object.keys(acq[t] || {}).forEach(nm=>{ if(!onRoster.has(nm)) delete acq[t][nm]; });
+      const posOf = {};
+      roster.forEach(r=> posOf[r[0]] = r[2]);
+      Object.keys(lineups[w][t]).forEach(k=>{
+        const slot = SLOTS.find(x=>x.key===k);
+        const nm = lineups[w][t][k];
+        /* a position correction can leave someone in a slot he no longer fits */
+        if(onRoster.has(nm) && slot && !slot.takes.includes(posOf[nm])){
+          delete lineups[w][t][k];
+          if(pts[w]?.[t])    delete pts[w][t][k];
+          if(manual[w]?.[t]) delete manual[w][t][k];
+          return;
+        }
+        if(!onRoster.has(lineups[w][t][k])){
+          delete lineups[w][t][k];
+          if(pts[w]?.[t])    delete pts[w][t][k];
+          if(manual[w]?.[t]) delete manual[w][t][k];
+        }
+      });
+    });
+  });
+}
+
+let rosterPullTimer = null;
+function afterRosterChange(){
+  purgeLineups();
+  purgeOrphanPoints();
+  saveAll(rosterIndex);
+  renderOwners();
+  renderRoster();
+  loadCardFromStore();
+  renderCard();
+  renderMatchups();
+  /* a new man should start scoring straight away, not at the next poll */
+  if(Feed.on){
+    clearTimeout(rosterPullTimer);
+    rosterPullTimer = setTimeout(()=> pullFeed(matchWeek, true), 900);
+  }
+}
+
+/* Editing rosters needs the commissioner's word, once per session.
+   Same word as the lineup locks. Leaving edit mode never asks. */
+let rosterUnlocked = false;
+
+function showRosterGate(on){
+  const box = document.getElementById("rosterGate");
+  box.hidden = !on;
+  if(on){
+    const f = document.getElementById("rosterPw");
+    f.value = ""; f.classList.remove("bad"); f.focus();
+  }
+}
+
+function enterEditMode(){
+  editingRoster = true;
+  note("");
+  renderRoster();
+}
+
+function wireRosterGate(){
+  const go = document.getElementById("rosterGo");
+  const pw = document.getElementById("rosterPw");
+
+  go.addEventListener("click", ()=>{
+    if(wordHash(pw.value) !== UNLOCK_HASH){
+      pw.classList.add("bad");
+      pw.value = "";
+      pw.focus();
+      note("That is not the commissioner's word. The roster stays locked.", true);
+      return;
+    }
+    rosterUnlocked = true;
+    showRosterGate(false);
+    enterEditMode();
+    note("Roster unlocked for this visit. A reload locks it again.");
+  });
+
+  document.getElementById("rosterCancel").addEventListener("click", ()=> showRosterGate(false));
+  pw.addEventListener("keydown", e=>{
+    if(e.key === "Enter") go.click();
+    if(e.key === "Escape") showRosterGate(false);
+  });
+}
+
+/* ---------- trades ----------
+   A trade moves players both ways at once and costs each side exactly one
+   transaction, whatever the player count. Rule 5: trades have no player limit. */
+let tradeOpen = false;
+let tradePartner = null;
+let tradeSend = new Set();      // my players going out
+let tradeRecv = new Set();      // their players coming in
+let tradeDrop = { me:new Set(), them:new Set() };   // released to make room
+let tradeFA   = { me:[],        them:[] };          // written in from free agency
+
+function tradeReset(){
+  tradeSend = new Set(); tradeRecv = new Set();
+  tradeDrop = { me:new Set(), them:new Set() };
+  tradeFA   = { me:[], them:[] };
+}
+
+/* is this name already rostered anywhere, ignoring men leaving in this trade? */
+function nameTakenForTrade(name){
+  const n = name.trim().toLowerCase();
+  const leaving = new Set([...tradeDrop.me, ...tradeDrop.them].map(x=>x.toLowerCase()));
+  for(const t of TEAMS){
+    for(const r of t.roster){
+      if(r[0].toLowerCase() === n && !leaving.has(n)) return t.owner;
+    }
+  }
+  if(tradeFA.me.concat(tradeFA.them).some(f=>f[0].toLowerCase() === n)) return "this trade";
+  return null;
+}
+
+/* the drop / free-agent block shown for whichever side is out of balance */
+function renderTradeFix(side, teamIdx, after, chosenSend){
+  const box = document.getElementById(side === "me" ? "tradeFixMine" : "tradeFixTheirs");
+  const over  = after - 18;
+  const under = 18 - after;
+  const owner = esc(TEAMS[teamIdx].owner);
+
+  if(over <= 0 && under <= 0 && !tradeDrop[side].size && !tradeFA[side].length){
+    box.hidden = true; box.innerHTML = ""; return;
+  }
+  box.hidden = false;
+
+  let html = "";
+  if(over > 0 || tradeDrop[side].size){
+    const pool = toPlayers(TEAMS[teamIdx]).filter(pl=>!chosenSend.has(pl.name));
+    html += `<div class="fix-block">
+      <h5>${owner} drops ${over > 0 ? over : 0} to fit
+        <span class="fix-sub">${tradeDrop[side].size} chosen · released to free agency</span></h5>
+      <div class="fix-list">` + pool.map(pl=>`
+        <label class="trade-item${tradeDrop[side].has(pl.name)?" on":""}">
+          <input type="checkbox" data-fix="drop" data-side="${side}" data-name="${esc(pl.name)}"
+                 ${tradeDrop[side].has(pl.name)?"checked":""}>
+          <span class="pos pos-${pl.pos}">${pl.pos}</span>
+          <span class="tnm">${esc(pl.name)}</span>
+          <span class="ttm">${esc(pl.team)}</span>
+        </label>`).join("") + `</div></div>`;
+  }
+
+  if(under > 0 || tradeFA[side].length){
+    html += `<div class="fix-block">
+      <h5>${owner} may write in ${under > 0 ? under : 0} from free agency
+        <span class="fix-sub">included in this trade, no extra transaction</span></h5>
+      <div class="fa-rows">` +
+      tradeFA[side].map((f,i)=>`<span class="fa-chip">${esc(f[0])} <i>${esc(f[1])} · ${f[2]}${f[3]?" · bye "+f[3]:""}</i>
+        <button class="tiny" data-fixdel="${i}" data-side="${side}">&times;</button></span>`).join("") +
+      `</div>
+      <div class="addrow">
+        <input class="fld name" data-fa="name" data-side="${side}" type="text" placeholder="Player or defense">
+        <input class="fld team" data-fa="team" data-side="${side}" type="text" maxlength="3" placeholder="TEAM">
+        <select class="fld pos" data-fa="pos" data-side="${side}">` +
+          ["QB","RB","WR","TE","K","DEF"].map(x=>`<option value="${x}">${x}</option>`).join("") +
+        `</select>
+        <input class="fld bye" data-fa="bye" data-side="${side}" type="number" min="1" max="18" placeholder="Bye">
+        <button class="mini solid" data-faadd="${side}">Include</button>
+      </div></div>`;
+  }
+  box.innerHTML = html;
+}
+
+function renderTradePanel(){
+  const bar = document.getElementById("tradeBar");
+  bar.hidden = !tradeOpen;
+  document.getElementById("tradeToggle").hidden = !editingRoster;
+  if(!tradeOpen) return;
+
+  const me = rosterIndex;
+  const sel = document.getElementById("tradePartner");
+  if(sel.dataset.forTeam !== String(me)){
+    sel.innerHTML = TEAMS.map((t,i)=> i===me ? "" :
+      `<option value="${i}">${esc(t.owner)}</option>`).join("");
+    sel.dataset.forTeam = String(me);
+    tradePartner = Number(sel.value);
+  }
+  if(tradePartner === null || tradePartner === me) tradePartner = Number(sel.value);
+  sel.value = String(tradePartner);
+
+  const them = tradePartner;
+  document.getElementById("tradeMineHead").textContent   = TEAMS[me].owner + " sends";
+  document.getElementById("tradeTheirsHead").textContent = TEAMS[them].owner + " sends";
+
+  const list = (teamIdx, chosen, cls) => toPlayers(TEAMS[teamIdx]).map(pl=>`
+    <label class="trade-item${chosen.has(pl.name)?" on":""}">
+      <input type="checkbox" data-side="${cls}" data-name="${esc(pl.name)}" ${chosen.has(pl.name)?"checked":""}>
+      <span class="pos pos-${pl.pos}">${pl.pos}</span>
+      <span class="tnm">${esc(pl.name)}</span>
+      <span class="ttm">${esc(pl.team)}</span>
+    </label>`).join("");
+
+  document.getElementById("tradeMine").innerHTML   = list(me,   tradeSend, "send");
+  document.getElementById("tradeTheirs").innerHTML = list(them, tradeRecv, "recv");
+
+  /* size after the swap alone, before any balancing */
+  const mySwap    = TEAMS[me].roster.length   - tradeSend.size + tradeRecv.size;
+  const theirSwap = TEAMS[them].roster.length - tradeRecv.size + tradeSend.size;
+
+  renderTradeFix("me",   me,   mySwap,    tradeSend);
+  renderTradeFix("them", them, theirSwap, tradeRecv);
+
+  /* final size once drops and free-agent write-ins are applied */
+  const myAfter    = mySwap    - tradeDrop.me.size   + tradeFA.me.length;
+  const theirAfter = theirSwap - tradeDrop.them.size + tradeFA.them.length;
+  const uMe = transactionsUsed(me).total, uThem = transactionsUsed(them).total;
+
+  const extras = [];
+  if(tradeDrop.me.size)    extras.push(`${TEAMS[me].owner} drops ${tradeDrop.me.size}`);
+  if(tradeDrop.them.size)  extras.push(`${TEAMS[them].owner} drops ${tradeDrop.them.size}`);
+  if(tradeFA.me.length)    extras.push(`${TEAMS[me].owner} signs ${tradeFA.me.length}`);
+  if(tradeFA.them.length)  extras.push(`${TEAMS[them].owner} signs ${tradeFA.them.length}`);
+  document.getElementById("tradeCount").textContent =
+    `${tradeSend.size} out, ${tradeRecv.size} in` + (extras.length ? " · " + extras.join(", ") : "") +
+    ` · ${TEAMS[me].owner} ${myAfter}, ${TEAMS[them].owner} ${theirAfter}`;
+
+  const problems = [];
+  if(!tradeSend.size && !tradeRecv.size) problems.push("Pick at least one player.");
+  if(myAfter > 18)    problems.push(`${TEAMS[me].owner} is ${myAfter-18} over — drop someone below.`);
+  if(theirAfter > 18) problems.push(`${TEAMS[them].owner} is ${theirAfter-18} over — drop someone below.`);
+  if(uMe >= 5)   problems.push(`${TEAMS[me].owner} has used all 5 transactions — commissioner must approve.`);
+  if(uThem >= 5) problems.push(`${TEAMS[them].owner} has used all 5 transactions — commissioner must approve.`);
+
+  const noteEl = document.getElementById("tradeNote");
+  noteEl.textContent = problems.length ? problems.join(" ")
+    : `Still one transaction each — drops and free-agent signings ride along with the trade. `
+      + `${TEAMS[me].owner} ${uMe}→${uMe+1}, ${TEAMS[them].owner} ${uThem}→${uThem+1}.`;
+  noteEl.className = "addnote" + (problems.length ? " bad" : "");
+  document.getElementById("tradeGo").disabled =
+    (!tradeSend.size && !tradeRecv.size) || myAfter > 18 || theirAfter > 18;
+
+  bar.querySelectorAll(".trade-cols .trade-item input").forEach(cb=>{
+    cb.addEventListener("change", ()=>{
+      const set = cb.dataset.side === "send" ? tradeSend : tradeRecv;
+      if(cb.checked) set.add(cb.dataset.name); else set.delete(cb.dataset.name);
+      /* a man being traded away can't also be dropped */
+      tradeDrop.me   = new Set([...tradeDrop.me].filter(n=>!tradeSend.has(n)));
+      tradeDrop.them = new Set([...tradeDrop.them].filter(n=>!tradeRecv.has(n)));
+      renderTradePanel();
+    });
+  });
+
+  bar.querySelectorAll('[data-fix="drop"]').forEach(cb=>{
+    cb.addEventListener("change", ()=>{
+      const set = tradeDrop[cb.dataset.side];
+      if(cb.checked) set.add(cb.dataset.name); else set.delete(cb.dataset.name);
+      renderTradePanel();
+    });
+  });
+
+  bar.querySelectorAll("[data-fixdel]").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      tradeFA[b.dataset.side].splice(+b.dataset.fixdel, 1);
+      renderTradePanel();
+    });
+  });
+
+  bar.querySelectorAll("[data-faadd]").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const side = b.dataset.faadd;
+      const g = k => bar.querySelector(`[data-fa="${k}"][data-side="${side}"]`);
+      const nm = g("name").value.trim();
+      if(!nm){ g("name").focus(); return; }
+      const clash = nameTakenForTrade(nm);
+      if(clash){
+        const n = document.getElementById("tradeNote");
+        n.textContent = `${nm} is already on ${clash}'s roster.`;
+        n.className = "addnote bad";
+        return;
+      }
+      tradeFA[side].push([nm, (g("team").value.trim() || "FA").toUpperCase(),
+                          g("pos").value, g("bye").value === "" ? 0 : Number(g("bye").value)]);
+      renderTradePanel();
+    });
+  });
+}
+
+function executeTrade(){
+  const me = rosterIndex, them = tradePartner;
+  if(me === them || them === null) return;
+  const out = [...tradeSend], inc = [...tradeRecv];
+  if(!out.length && !inc.length) return;
+
+  const tradeId = "t" + Date.now();
+  const wk = currentNflWeek || matchWeek || 1;
+  const at = Date.now();
+  const rowOf = (t,name) => TEAMS[t].roster.find(r=>r[0]===name);
+
+  const moving = [];
+  out.forEach(n=>{ const r = rowOf(me,n);   if(r) moving.push({row:r.slice(), from:me,   to:them}); });
+  inc.forEach(n=>{ const r = rowOf(them,n); if(r) moving.push({row:r.slice(), from:them, to:me}); });
+
+  moving.forEach(({row, from, to})=>{
+    const i = TEAMS[from].roster.findIndex(r=>r[0]===row[0]);
+    if(i > -1) TEAMS[from].roster.splice(i,1);
+    TEAMS[to].roster.push(row);
+    delete acqOf(from)[row[0]];
+    acqOf(to)[row[0]] = wk;                      // his clock restarts on the new roster
+    (moves[from] ||= []).push({ k:"trade", tradeId, with:to,   dir:"out",
+      name:row[0], team:row[1], pos:row[2], bye:row[3]||0, week:wk, at });
+    (moves[to]   ||= []).push({ k:"trade", tradeId, with:from, dir:"in",
+      name:row[0], team:row[1], pos:row[2], bye:row[3]||0, week:wk, at });
+  });
+
+  /* releases and free-agent signings ride along inside the same transaction */
+  const sides = [["me", me], ["them", them]];
+  sides.forEach(([side, t])=>{
+    [...tradeDrop[side]].forEach(nm=>{
+      const i = TEAMS[t].roster.findIndex(r=>r[0]===nm);
+      if(i < 0) return;
+      const row = TEAMS[t].roster.splice(i,1)[0];
+      delete acqOf(t)[nm];
+      (moves[t] ||= []).push({ k:"trade", tradeId, with:(t===me?them:me), dir:"drop",
+        name:row[0], team:row[1], pos:row[2], bye:row[3]||0, week:wk, at });
+    });
+    tradeFA[side].forEach(f=>{
+      if(TEAMS[t].roster.some(r=>r[0].toLowerCase()===f[0].toLowerCase())) return;
+      TEAMS[t].roster.push(f.slice());
+      acqOf(t)[f[0]] = wk;
+      (moves[t] ||= []).push({ k:"trade", tradeId, with:(t===me?them:me), dir:"fa",
+        name:f[0], team:f[1], pos:f[2], bye:f[3]||0, week:wk, at });
+    });
+  });
+
+  const dropped = tradeDrop.me.size + tradeDrop.them.size;
+  const signed  = tradeFA.me.length + tradeFA.them.length;
+  tradeOpen = false; tradeReset();
+  note(`Trade with ${TEAMS[them].owner} done — ${out.length} out, ${inc.length} in` +
+       (dropped ? `, ${dropped} released` : "") + (signed ? `, ${signed} signed` : "") +
+       ". One transaction each.");
+  saveAll(me); saveAll(them);
+  afterRosterChange();
+  renderTradePanel();
+}
+
+function wireTrades(){
+  document.getElementById("tradeToggle").addEventListener("click", ()=>{
+    tradeOpen = !tradeOpen;
+    tradeReset();
+    renderTradePanel();
+  });
+  document.getElementById("tradeCancel").addEventListener("click", ()=>{
+    tradeOpen = false; tradeReset(); renderTradePanel();
+  });
+  document.getElementById("tradePartner").addEventListener("change", e=>{
+    tradePartner = Number(e.target.value); tradeRecv = new Set(); renderTradePanel();
+  });
+  document.getElementById("tradeGo").addEventListener("click", executeTrade);
+}
+
+function wireRosterEditing(){
+  wireRosterGate();
+  wireTrades();
+
+  document.getElementById("sortToggle").addEventListener("click",()=>{
+    const i = SORT_CYCLE.indexOf(rosterSort);
+    rosterSort = SORT_CYCLE[(i + 1) % SORT_CYCLE.length];
+    expandedPlayer = null;              // row order changed under the open row
+    renderRoster();
+  });
+
+  document.getElementById("seasonPull").addEventListener("click",()=>{
+    if(!Feed.on){
+      note("Turn the live feed on first — banking reads the box scores week by week.", true);
+      return;
+    }
+    captureSeason();
+  });
+
+  document.getElementById("editToggle").addEventListener("click",()=>{
+    if(editingRoster){                 // finishing up never asks
+      editingRoster = false;
+      showRosterGate(false);
+      note("");
+      renderRoster();
+      return;
+    }
+    if(!rosterUnlocked){ showRosterGate(true); return; }
+    enterEditMode();
+  });
+
+
+  document.getElementById("addPlayer").addEventListener("click",()=>{
+    const nameEl = document.getElementById("npName");
+    const teamEl = document.getElementById("npTeam");
+    const byeEl  = document.getElementById("npBye");
+    const name = nameEl.value.trim();
+    const team = (teamEl.value.trim() || "FA").toUpperCase();
+    const pos  = document.getElementById("npPos").value;
+    const bye  = byeEl.value === "" ? 0 : Number(byeEl.value);
+    const roster = TEAMS[rosterIndex].roster;
+
+    if(!name){ note("Enter a player name first.", true); nameEl.focus(); return; }
+    if(roster.length >= 18){ note("Roster is at 18. Drop someone before adding.", true); return; }
+    if(roster.some(r => r[0].toLowerCase() === name.toLowerCase())){
+      note(`${name} is already on this roster.`, true); return;
+    }
+    const taken = TEAMS.find((t,i)=> i!==rosterIndex && t.roster.some(r=>r[0].toLowerCase()===name.toLowerCase()));
+    if(taken){ note(`${name} is on ${taken.owner}'s roster. Trade for him or pick someone else.`, true); return; }
+
+    const row = [name, team, pos, bye];
+    roster.push(row);
+    acqOf(rosterIndex)[name] = currentNflWeek || matchWeek || 1;
+    logMove("add", row);
+    nameEl.value = ""; teamEl.value = ""; byeEl.value = "";
+    const used = transactionsUsed(rosterIndex).total;
+    note(used > 5
+      ? `Added ${name} — but that is transaction ${used} of 5, so the commissioner has to sign off.`
+      : `Added ${name} — ${used} of 5 transactions used.`, used > 5);
+    afterRosterChange();
+    nameEl.focus();
+  });
+
+  document.getElementById("npName").addEventListener("keydown", e=>{
+    if(e.key === "Enter") document.getElementById("addPlayer").click();
+  });
+}
+
+/* ============================================================
+   STORE — where the league book lives
+   Three possible homes, picked automatically:
+     1. Claude's own storage, when running inside the Claude app
+     2. a Cloudflare Worker, when LEAGUE_API below is filled in
+     3. memory only, which forgets everything on reload
+   Set LEAGUE_API to your Worker URL to share the book between owners.
+   ============================================================ */
+const LEAGUE_API = "https://league-book.jsawall22.workers.dev";
+
+const Store = (() => {
+  const mem = {};
+  let mode = "memory";
+
+  /* The Worker is the league's real book, so prefer it everywhere it can be
+     reached — otherwise people on the hosted site and people inside Claude
+     would quietly be keeping two separate books. Falls back to Claude's own
+     storage if the Worker cannot be reached, and to memory if neither works. */
+  async function detect(){
+    if(LEAGUE_API){
+      try{
+        const r = await fetch(LEAGUE_API.replace(/\/+$/, "") + "/keys", { cache:"no-store" });
+        if(r.ok){ mode = "cloud"; return mode; }
+      }catch(e){ /* unreachable — fall through */ }
+    }
+    if(typeof window !== "undefined" && window.storage) mode = "claude";
+    else mode = "memory";
+    return mode;
+  }
+
+  const url = (key, shared) =>
+    LEAGUE_API.replace(/\/+$/, "") + "/kv/" + encodeURIComponent((shared ? "s:" : "p:") + key);
+
+  async function get(key, shared){
+    if(mode === "claude") return window.storage.get(key, shared);
+    if(mode === "cloud"){
+      const r = await fetch(url(key, shared), { cache: "no-store" });
+      if(r.status === 404) throw new Error("not found");
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      const j = await r.json();
+      if(j.value === null || j.value === undefined) throw new Error("not found");
+      return { key, value: j.value, shared };
+    }
+    const v = mem[(shared ? "s:" : "p:") + key];
+    if(v === undefined) throw new Error("not found");
+    return { key, value: v, shared };
+  }
+
+  async function set(key, value, shared){
+    if(mode === "claude") return window.storage.set(key, value, shared);
+    if(mode === "cloud"){
+      const r = await fetch(url(key, shared), {
+        method: "PUT", headers: { "Content-Type": "text/plain" }, body: value });
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      return { key, value, shared };
+    }
+    mem[(shared ? "s:" : "p:") + key] = value;
+    return { key, value, shared };
+  }
+
+  return { get, set, detect, get mode(){ return mode; } };
+})();
+
+/* ============================================================
+   SEASON POINTS LEDGER
+   The feed only ever holds one week in memory, so a running total
+   has to be banked somewhere. playerWeeks[week][normName] = points,
+   written once per week and kept in the shared book.
+   ============================================================ */
+let acq = {};           // acq[team][playerName] = week he joined that roster
+let weekRoster = {};    // weekRoster[w] = roster signature captured for that week
+let playerWeeks = {};   // playerWeeks[w][normName] = pts
+let weekDone    = {};   // weekDone[w] = true once every game that week is final
+const STATS_KEY = "league2026-playerweeks";
+const pkey = p => ESPN.normName(p.name);
+
+/* which week did this man join this roster? drafted players count from week 1 */
+const acqOf = (t) => (acq[t] ||= {});
+function acqWeek(t, name){
+  const v = acqOf(t)[name];
+  return (typeof v === "number" && v >= 1) ? v : 1;
+}
+/* a fingerprint of every rostered name, to spot when a week needs re-banking */
+function rosterSig(){
+  return TEAMS.map(t => t.roster.map(r => ESPN.normName(r[0])).sort().join("|")).join("~");
+}
+
+async function loadStats(){
+  if(Store.mode === "memory") return;
+  try{
+    const r = await Store.get(STATS_KEY, SHARED);
+    if(r && r.value){
+      const d = JSON.parse(r.value);
+      playerWeeks = d.weeks || {};
+      weekDone    = d.done  || {};
+      weekRoster  = d.rosters || {};
+    }
+  }catch(e){ /* nothing banked yet */ }
+}
+
+let statsTimer;
+function saveStats(){
+  if(Store.mode === "memory") return;
+  clearTimeout(statsTimer);
+  statsTimer = setTimeout(async ()=>{
+    try{
+      await Store.set(STATS_KEY,
+        JSON.stringify({ weeks: playerWeeks, done: weekDone, rosters: weekRoster }), SHARED);
+    }catch(e){ /* in-memory copy still stands */ }
+  }, 600);
+}
+
+/* bank every rostered player's points for the week the feed just read */
+function captureWeek(w){
+  const rec = (playerWeeks[w] ||= {});
+  let any = false;
+  TEAMS.forEach(t => toPlayers(t).forEach(p=>{
+    const fp = feedPointsFor(p);
+    if(fp){ rec[pkey(p)] = fp.pts; any = true; }
+  }));
+  const games = Feed.games || [];
+  const played = games.filter(e => e.state !== "pre");
+  if(played.length && played.every(e => e.state === "post") && games.every(e => e.state !== "in")){
+    weekDone[w] = true;
+  }
+  if(any || weekDone[w]) saveStats();
+  else if(!Object.keys(rec).length) delete playerWeeks[w];   // nothing to bank yet
+}
+
+/* a number the commissioner typed for this player that week outranks the feed */
+function manualPtsForPlayer(player, w){
+  for(let t = 0; t < TEAMS.length; t++){
+    const L = lineups[w]?.[t];
+    if(!L) continue;
+    for(const s of SLOTS){
+      if(L[s.key] === player.name && manual[w]?.[t]?.[s.key]){
+        const v = pts[w]?.[t]?.[s.key];
+        if(v !== undefined) return v;
+      }
+    }
+  }
+  return null;
+}
+
+function playerWeekPts(player, w){
+  const man = manualPtsForPlayer(player, w);
+  if(man !== null) return man;
+  const v = playerWeeks[w]?.[pkey(player)];
+  return v === undefined ? null : v;
+}
+
+function playerSeason(player, t){
+  const from = (t === undefined) ? 1 : acqWeek(t, player.name);
+  let total = 0, weeks = 0, best = null, since = 0, sinceWeeks = 0;
+  for(let w = 1; w <= 17; w++){
+    const v = playerWeekPts(player, w);
+    if(v === null) continue;
+    total += v; weeks++;
+    if(best === null || v > best) best = v;
+    if(w >= from){ since += v; sinceWeeks++; }
+  }
+  return {
+    total: Math.round(total * 10) / 10, weeks, best,
+    since: Math.round(since * 10) / 10, sinceWeeks,
+    from, midSeason: from > 1
+  };
+}
+
+/* ============================================================
+   CURRENT NFL WEEK
+   Sleeper publishes league state at /state/nfl — a tiny, keyless
+   call. ESPN's scoreboard carries the same number as a fallback,
+   and if the page is offline we estimate from the calendar.
+   ============================================================ */
+let currentNflWeek = null;
+
+/* 2026 regular season opener. Adjust here if the schedule shifts. */
+const SEASON_OPENER = new Date(2026, 8, 9);   // 9 Sep 2026
+
+function estimateWeek(){
+  const now = new Date();
+  if(now < SEASON_OPENER) return null;             // preseason or earlier
+  const days = Math.floor((now - SEASON_OPENER) / 86400000);
+  const w = Math.floor(days / 7) + 1;
+  return (w >= 1 && w <= 17) ? w : null;
+}
+
+async function detectNflWeek(){
+  /* 1. Sleeper's league state */
+  try{
+    const s = await ESPN.getJSON("https://api.sleeper.app/v1/state/nfl");
+    if(s){
+      const t = s.season_type;
+      const w = Number(s.display_week || s.week);
+      if(t === "regular" && w >= 1) return Math.min(17, w);
+      if(t === "post") return 17;
+      if(t === "pre")  return 1;
+    }
+  }catch(e){ /* try the next source */ }
+
+  /* 2. ESPN's scoreboard reports the week it is currently showing */
+  try{
+    const j = await ESPN.getJSON(ESPN.BASE + "/scoreboard");
+    const w = Number(j?.week?.number);
+    const type = j?.season?.type;
+    if(w >= 1){
+      if(type === 3) return 17;                    // postseason
+      if(type === 2) return Math.min(17, w);       // regular
+      return 1;                                    // preseason
+    }
+  }catch(e){ /* fall through to the calendar */ }
+
+  /* 3. no network — count weeks off the opener */
+  return estimateWeek();
+}
+
+/* jump both the lineup card and the matchup board to a week */
+function goToWeek(w){
+  if(!w || w < 1 || w > 18) return;
+  week = w;
+  matchWeek = w;
+  const sel = document.getElementById("weekSelect");
+  if(sel) sel.value = String(w);
+  loadCardFromStore();
+  renderCard();
+  renderMatchups();
+  renderRoster();
+  renderWeekNote();
+}
+
+function renderWeekNote(){
+  const el = document.getElementById("weekNote");
+  if(!el) return;
+  if(!currentNflWeek){
+    el.textContent = "Season hasn't started";
+    el.className = "weeknote";
+    return;
+  }
+  const onNow = (week === currentNflWeek);
+  el.textContent = onNow ? "NFL week " + currentNflWeek : "NFL week is " + currentNflWeek;
+  el.className = "weeknote" + (onNow ? " now" : " off");
+
+  document.querySelectorAll("#nowBtn").forEach(b=>{
+    b.hidden = onNow;
+    b.textContent = "Go to week " + currentNflWeek;
+  });
+}
+
+/* ============================================================
+   WEEKLY SCHEDULE
+   One scoreboard call per week gives every team's opponent, home or
+   away, kickoff time and game state. Cached in the shared book so
+   the lineup card can show matchups with the live feed switched off.
+   ============================================================ */
+const SCHED_KEY = "league2026-schedule";
+let schedule = {};        // schedule['R5'|'P1'][ABBR] = { opp, away, state, detail, kick }
+/* schedBusy replaced by schedPromise so in-flight fetches are awaitable */
+const schedFailed = {};
+
+async function loadSchedule(){
+  if(Store.mode === "memory") return;
+  try{
+    const r = await Store.get(SCHED_KEY, SHARED);
+    if(r && r.value) schedule = JSON.parse(r.value) || {};
+  }catch(e){ /* nothing cached */ }
+}
+
+let schedTimer;
+function saveSchedule(){
+  if(Store.mode === "memory") return;
+  clearTimeout(schedTimer);
+  schedTimer = setTimeout(async ()=>{
+    try{ await Store.set(SCHED_KEY, JSON.stringify(schedule), SHARED); }catch(e){}
+  }, 700);
+}
+
+const schedKey = w => "R" + w;
+
+const schedPromise = {};
+
+async function fetchWeekSchedule(w){
+  const key = schedKey(w);
+  if(schedule[key]) return schedule[key];
+  if(schedFailed[key]) return null;
+  /* an in-flight fetch must be awaitable, not skipped — otherwise a caller
+     that needs the schedule races past it and sees nothing */
+  if(schedPromise[key]) return schedPromise[key];
+
+  schedPromise[key] = (async ()=>{
+    try{
+      const j = await ESPN.getJSON(ESPN.BASE + "/scoreboard?dates=" + ESPN.SEASON +
+                                   "&seasontype=" + ESPN.REGULAR + "&week=" + w + "&limit=100");
+      const map = {};
+      (j.events || []).forEach(e=>{
+        const c = e.competitions?.[0];
+        if(!c) return;
+        const comps = c.competitors || [];
+        const home = comps.find(x => x.homeAway === "home");
+        const away = comps.find(x => x.homeAway === "away");
+        if(!home?.team?.abbreviation || !away?.team?.abbreviation) return;
+        const state  = c.status?.type?.state || "pre";
+        const detail = c.status?.type?.shortDetail || "";
+        const kick   = c.date || e.date || "";
+        const hs = home.score === undefined || home.score === null ? null : Number(home.score);
+        const as = away.score === undefined || away.score === null ? null : Number(away.score);
+        map[home.team.abbreviation] = { opp: away.team.abbreviation, away:false,
+                                        state, detail, kick, score:hs, oppScore:as };
+        map[away.team.abbreviation] = { opp: home.team.abbreviation, away:true,
+                                        state, detail, kick, score:as, oppScore:hs };
+      });
+      if(Object.keys(map).length){
+        schedule[key] = map;
+        saveSchedule();
+        return map;
+      }
+      schedFailed[key] = true;      // week not published yet
+      return null;
+    }catch(e){
+      schedFailed[key] = true;      // offline — don't hammer it on every render
+      return null;
+    }finally{
+      delete schedPromise[key];
+      renderCardOnly();
+      if(!isEditing()) renderMatchups();   // the sheet shows opponents too
+    }
+  })();
+
+  return schedPromise[key];
+}
+
+/* what is this player's team doing in week w? */
+function matchupFor(player, w){
+  const m = schedule[schedKey(w)];
+  if(!m) return null;
+  const alt = ESPN.TEAM_ALIAS[player.team];
+  const g = m[player.team] || (alt ? m[alt] : null);
+  if(g) return g;
+  return { bye:true };           // team absent from a known week = on bye
+}
+
+function kickText(g){
+  if(!g || g.bye) return "";
+  if(g.state === "in")   return g.detail || "live";
+  if(g.state === "post") return g.detail || "final";
+  if(!g.kick) return "";
+  const d = new Date(g.kick);
+  if(isNaN(d)) return "";
+  return d.toLocaleString(undefined, { weekday:"short", hour:"numeric", minute:"2-digit" });
+}
+
+/* "@ KC" or "vs KC" */
+function oppText(g){
+  if(!g) return "";
+  if(g.bye) return "BYE";
+  return (g.away ? "@ " : "vs ") + g.opp;
+}
+
+/* ============================================================
+   LINEUP LOCKS
+   A player locks when his own game kicks off, which is exactly what
+   the league sheet asks for: Thursday and Saturday players called in
+   before game time that day, everyone else by noon Sunday.
+   Fails open — if the schedule is unknown, nothing locks, so a
+   network problem can never stop someone setting a lineup.
+   ============================================================ */
+let locksOn = true;          // session only; a reload restores locking
+
+/* The feed writes the points itself, so hand entry is the exception. A stray
+   keystroke in a points box sticks for good — it is tagged as typed and the
+   feed then leaves it alone — so the boxes are sealed until unlocked. */
+let scoresUnlocked = false;
+
+/* Turning locks off needs the commissioner's word. Stored as a hash so the
+   word is not sitting in the page source in plain text. Case and surrounding
+   spaces are ignored. To change it, run this in a console and paste the result:
+     s=>{let x=5381;for(let i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))|0;return (x>>>0).toString(36)}
+   NOTE: this is a deterrent among friends, not security. Anyone who opens the
+   browser's developer tools can bypass it. It stops idle meddling, nothing more. */
+const UNLOCK_HASH = "ykez1g";
+function wordHash(s){
+  let x = 5381;
+  const v = String(s || "").trim().toLowerCase();
+  for(let i = 0; i < v.length; i++) x = ((x << 5) + x + v.charCodeAt(i)) | 0;
+  return (x >>> 0).toString(36);
+}
+
+function playerLocked(p, w){
+  if(!locksOn || !p) return false;
+  const g = matchupFor(p, w);
+  if(!g || g.bye) return false;              // unknown or on bye
+  return g.state === "in" || g.state === "post";
+}
+
+function slotLocked(w, t, slotKey){
+  if(!locksOn) return false;
+  const nm = lineupOf(w, t)[slotKey];
+  if(!nm) return false;                      // an empty line stays open
+  return playerLocked(playerByName(t, nm), w);
+}
+
+/* ============================================================
+   LINEUP CARD
+   ============================================================ */
+function renderTeamChooser(){
+  document.getElementById("teamChooser").innerHTML = TEAMS.map((t,i)=>
+    `<button class="chip" data-team="${i}" aria-pressed="${i===teamIndex}">${t.owner}</button>`
+  ).join("");
+  document.querySelectorAll("#teamChooser .chip").forEach(b=>{
+    b.addEventListener("click",()=>{
+      teamIndex = +b.dataset.team;
+      loadCardFromStore();
+      activeSlot = "QB";
+      document.querySelectorAll("#teamChooser .chip").forEach(x=>
+        x.setAttribute("aria-pressed",(+x.dataset.team===teamIndex).toString()));
+      renderCard();
+    });
+  });
+}
+
+function renderWeeks(){
+  const sel = document.getElementById("weekSelect");
+  sel.innerHTML = Array.from({length:18},(_,i)=>
+    `<option value="${i+1}" ${i+1===week?"selected":""}>Week ${i+1}</option>`).join("");
+  sel.addEventListener("change",()=>{
+    week = +sel.value;
+    loadCardFromStore();
+    renderCard();
+    renderWeekNote();
+  });
+}
+
+const rosterOf = () => toPlayers(TEAMS[teamIndex]);
+const usedNames = () => Object.values(card).map(p=>p.name);
+
+function renderCard(){
+  pushCard();
+  renderCardOnly();
+  if(matchWeek === week) renderMatchups();
+}
+
+function renderCardOnly(){
+  const t = TEAMS[teamIndex];
+  document.getElementById("cardTeam").textContent = t.owner;
+  document.getElementById("cardWeek").textContent = "Week " + week;
+
+  const showLive = Feed.on && Feed.week === week;
+  if(!schedule[schedKey(week)]) fetchWeekSchedule(week);
+
+  document.getElementById("slots").innerHTML = SLOTS.map(s=>{
+    const p = card[s.key];
+    const isActive = activeSlot === s.key;
+    let inner;
+    if(p){
+      const g = matchupFor(p, week);
+      const onBye = (g && g.bye) || (!g && p.bye === week);
+      let lp = "";
+      if(showLive){
+        const fp = feedPointsFor(p);
+        if(fp){
+          const cls = fp.state === "in" ? "playing" : (fp.state === "post" ? "final" : "pre");
+          const tag = fp.state === "in" ? "live" : (fp.state === "post" ? "final" : "pre");
+          lp = `<span class="lp ${cls}"><b>${fp.pts}</b><i>${tag}</i></span>`;
+        } else {
+          lp = `<span class="lp none"><b>—</b><i>no feed</i></span>`;
+        }
+      }
+      const opp  = g ? oppText(g) : "";
+      const kick = g ? kickText(g) : "";
+      const oppCls = !g ? "unk" : (g.bye ? "bye" :
+        (g.state === "in" ? "live" : (g.state === "post" ? "done" : "")));
+      inner = `<span class="written ${justWritten===s.key?"fresh":""}">${esc(p.name)}</span>
+        ${onBye ? `<span class="bye-flag">bye!</span>` : ""}
+        <span class="written-meta">
+          <span class="wm-team">${esc(p.team)} &middot; ${p.pos}</span>
+          <span class="wm-opp ${oppCls}">${opp || "&mdash;"}</span>
+          ${kick ? `<span class="wm-kick">${esc(kick)}</span>` : ""}
+        </span>
+        ${lp}`;
+    } else {
+      inner = `<span class="slot-empty">write in ${s.label.toLowerCase()}</span>`;
+    }
+    const lk = slotLocked(week, teamIndex, s.key);
+    return `<div class="slot-row ${isActive?"active":""} ${lk?"locked":""}" data-slot="${s.key}">
+      <div class="slot-key">${s.label}:${lk?'<span class="lockmark" title="Locked — his game has started">&#128274;</span>':""}</div>
+      <button class="slot-fill" data-slot="${s.key}" data-locked="${lk}" aria-label="${s.label} slot${lk?", locked":""}">
+        ${inner}
+      </button>
+    </div>`;
+  }).join("");
+
+  /* card total */
+  const tot = teamTotal(week, teamIndex);
+  const totEl = document.getElementById("cardTotal");
+  totEl.innerHTML = (tot === null ? "—" : tot) + "<small>Points</small>";
+
+  document.querySelectorAll(".slot-fill").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const k = b.dataset.slot;
+      if(b.dataset.locked === "true"){
+        flashStatus("That line is locked — his game has already started.");
+        return;
+      }
+      if(card[k] && activeSlot === k){ delete card[k]; }
+      else { activeSlot = k; }
+      justWritten = null;
+      renderCard();
+    });
+  });
+
+  justWritten = null;
+  renderPool();
+  renderStatus();
+}
+
+function renderPool(){
+  const slot = SLOTS.find(s=>s.key===activeSlot);
+  const taken = usedNames();
+  const eligible = rosterOf()
+    .filter(p => slot.takes.includes(p.pos))
+    .sort((a,b)=> (POS_ORDER[a.pos]-POS_ORDER[b.pos]) || a.pick-b.pick);
+
+  document.getElementById("poolTitle").textContent = slot.label + " — eligible";
+  document.getElementById("poolSub").textContent =
+    slot.key === "WC" ? "Wild card takes any QB, RB, WR or TE."
+    : "Accepts " + slot.takes.join(" or ") + ".";
+
+  const list = document.getElementById("poolList");
+  if(!eligible.length){
+    list.innerHTML = `<div class="pool-empty">${TEAMS[teamIndex].owner} has no ${slot.takes.join("/")} on the roster. Add one with a transaction, or leave the line blank.</div>`;
+    return;
+  }
+  const showLive = Feed.on && Feed.week === week;
+  list.innerHTML = eligible.map(p=>{
+    const isTaken = taken.includes(p.name) && card[activeSlot]?.name !== p.name;
+    const lockedP = playerLocked(p, week);
+    const g = matchupFor(p, week);
+    const onBye = (g && g.bye) || (!g && p.bye === week);
+    let live = "";
+    if(showLive){
+      const fp = feedPointsFor(p);
+      if(fp) live = ` &middot; ${fp.pts} pts`;
+    }
+    const opp  = g ? oppText(g) : ("bye " + p.bye);
+    const kick = g ? kickText(g) : "";
+    const gcls = !g ? "" : (g.bye ? "bye" : (g.state === "in" ? "live"
+                 : (g.state === "post" ? "done" : "")));
+    return `<button class="pool-item ${onBye?"on-bye":""} ${lockedP?"locked":""}" data-name="${esc(p.name)}" ${isTaken||lockedP?"disabled":""}>
+      <span class="pos pos-${p.pos}">${p.pos}</span>
+      <span class="nm">${esc(p.name)}
+        <i class="pwhen ${gcls}">${esc(opp)}${kick ? " &middot; " + esc(kick) : ""}</i></span>
+      <span class="tm">${esc(p.team)}${isTaken?" &middot; started":""}${lockedP?" &middot; locked":""}${live}</span>
+    </button>`;
+  }).join("");
+
+  list.querySelectorAll(".pool-item").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const p = rosterOf().find(x=>x.name===b.dataset.name);
+      card[activeSlot] = p;
+      justWritten = activeSlot;
+      const next = SLOTS.find(s=>!card[s.key]);
+      if(next) activeSlot = next.key;
+      renderCard();
+    });
+  });
+}
+
+function renderStatus(){
+  const el = document.getElementById("status");
+  if(el && el.dataset.flash) return;          // a flash message is showing
+  const filled = SLOTS.filter(s=>card[s.key]).length;
+  const byes = SLOTS.filter(s=>{
+    const p = card[s.key];
+    if(!p) return false;
+    const g = matchupFor(p, week);
+    return (g && g.bye) || (!g && p.bye === week);
+  }).map(s=>card[s.key].name);
+  const rbCount = SLOTS.filter(s=>card[s.key] && card[s.key].pos === "RB").length;
+
+  let cls = "", lines = [];
+  if(filled < SLOTS.length){
+    lines.push(`${filled} of ${SLOTS.length} lines filled.`);
+  } else {
+    lines.push("All 9 lines filled.");
+  }
+  if(rbCount > 2) lines.push(`${rbCount} running backs started — the rule caps you at 2.`);
+  if(byes.length) lines.push(`On bye in Week ${week}: ${byes.join(", ")}.`);
+
+  if(byes.length || rbCount > 2) cls = "warn";
+  else if(filled === SLOTS.length) cls = "ok";
+
+  const lockedCount = SLOTS.filter(s=>slotLocked(week, teamIndex, s.key)).length;
+  if(lockedCount) lines.push(`${lockedCount} line${lockedCount===1?"":"s"} locked — those games have kicked off.`);
+  if(!locksOn) lines.push("Locks are OFF.");
+  if(cls === "ok") lines.push("Card is legal. Call it in before 12:00 Sunday.");
+  el.className = "status " + cls;
+  el.textContent = lines.join("  ");
+}
+
+document.getElementById("autoFill").addEventListener("click",()=>{
+  /* keep any line whose player has already kicked off */
+  const keep = {};
+  SLOTS.forEach(s=>{ if(slotLocked(week, teamIndex, s.key) && card[s.key]) keep[s.key] = card[s.key]; });
+  card = Object.assign({}, keep);
+  const taken = new Set(Object.values(keep).map(p=>p.name));
+  const order = ["QB","RB","WR1","WR2","PK","DEF","WRTE","RBWR","WC"];
+  order.forEach(key=>{
+    if(card[key]) return;                        // locked line, leave it
+    const slot = SLOTS.find(s=>s.key===key);
+    let rbUsed = Object.values(card).filter(p=>p.pos==="RB").length;
+    const pick = rosterOf()
+      .filter(p=>slot.takes.includes(p.pos) && !taken.has(p.name) && !playerLocked(p, week))
+      .filter(p=>!(p.pos==="RB" && rbUsed>=2))
+      .sort((a,b)=>{
+        const aBye = a.bye===week ? 1 : 0, bBye = b.bye===week ? 1 : 0;
+        return aBye-bBye || a.pick-b.pick;
+      })[0];
+    if(pick){ card[key] = pick; taken.add(pick.name); }
+  });
+  activeSlot = (SLOTS.find(s=>!card[s.key]) || SLOTS[0]).key;
+  renderCard();
+});
+
+document.getElementById("clearCard").addEventListener("click",()=>{
+  const keep = {};
+  SLOTS.forEach(s=>{ if(slotLocked(week, teamIndex, s.key) && card[s.key]) keep[s.key] = card[s.key]; });
+  const held = Object.keys(keep).length;
+  card = keep;
+  activeSlot = (SLOTS.find(s=>!card[s.key]) || SLOTS[0]).key;
+  renderCard();
+  if(held) flashStatus(held + " locked line" + (held===1?"":"s") + " kept — those games have started.");
+});
+
+/* ============================================================
+   FEED -> SHEET
+   The feed only writes into a cell nobody has typed into.
+   A typed number is a commissioner ruling and always wins.
+   ============================================================ */
+function applyFeedToSheet(){
+  if(!Feed.on || Feed.week == null) return;
+  const w = Feed.week;
+  const touched = new Set();
+
+  TEAMS.forEach((t, ti) => {
+    const L = lineupOf(w, ti);
+    const P = ptsOf(w, ti);
+    const M = manualOf(w, ti);
+    SLOTS.forEach(s => {
+      const nm = L[s.key];
+      if(!nm) return;
+      if(M[s.key]) return;                 // hand-entered, don't touch
+      const p = playerByName(ti, nm);
+      if(!p) return;
+      const fp = feedPointsFor(p);
+      if(!fp) return;
+      if(P[s.key] !== fp.pts){
+        P[s.key] = fp.pts;
+        touched.add(ti);
+      }
+    });
+  });
+  touched.forEach(ti => saveAll(ti));
+}
+
+/* where did the number in this cell come from? */
+function cellSource(w, ti, slotKey){
+  const M = manualOf(w, ti);
+  if(M[slotKey]) return "man";
+  if(!Feed.on || Feed.week !== w) return "";
+  const nm = lineupOf(w, ti)[slotKey];
+  if(!nm) return "";
+  const p = playerByName(ti, nm);
+  if(!p) return "";
+  const fp = feedPointsFor(p);
+  if(!fp) return "";
+  return fp.state === "in" ? "live" : (fp.state === "post" ? "fin" : "");
+}
+
+/* ============================================================
+   MATCHUPS, LINEUP SHEETS & STANDINGS
+   ============================================================ */
+const PATTERNS = [
+  [[1,2],[3,4],[5,6]],
+  [[1,3],[2,5],[4,6]],
+  [[1,4],[2,6],[3,5]],
+  [[1,5],[2,4],[3,6]],
+  [[1,6],[2,3],[4,5]]
+];
+const REG_WEEKS = 15;
+
+let matchWeek = 1;
+const num = v => (v === null || v === "" || v === undefined || isNaN(v)) ? null : Number(v);
+const TEAM_KEY = i => "league2026-team-" + i;
+const SHARED = true;
+let lastSync = null;
+
+function packTeam(i){
+  const pick = src => {
+    const out = {};
+    Object.keys(src).forEach(w=>{
+      const v = src[w]?.[i];
+      if(v && Object.keys(v).length) out[w] = v;
+    });
+    return out;
+  };
+  return {
+    roster: TEAMS[i].roster,
+    moves: moves[i] || [],
+    acq: acq[i] || {},
+    lineups: pick(lineups),
+    pts: pick(pts),
+    manual: pick(manual)
+  };
+}
+
+function unpackTeam(i, d){
+  if(Array.isArray(d.roster) && d.roster.length) TEAMS[i].roster = d.roster;
+  moves[i] = Array.isArray(d.moves) ? d.moves : [];
+  acq[i]   = (d.acq && typeof d.acq === "object") ? d.acq : {};
+  Object.keys(d.lineups || {}).forEach(w => (lineups[w] ||= {})[i] = d.lineups[w]);
+  Object.keys(d.pts     || {}).forEach(w => (pts[w]     ||= {})[i] = d.pts[w]);
+  Object.keys(d.manual  || {}).forEach(w => (manual[w]  ||= {})[i] = d.manual[w]);
+}
+
+async function loadBook(){
+  if(Store.mode === "memory"){ syncNote(); return; }
+  await Promise.all(TEAMS.map(async (_,i)=>{
+    try{
+      const r = await Store.get(TEAM_KEY(i), SHARED);
+      if(r && r.value) unpackTeam(i, JSON.parse(r.value));
+    }catch(e){ /* nothing saved for this team yet */ }
+  }));
+  lastSync = Date.now();
+  syncNote();
+}
+
+let dirty = new Set(), saveTimer;
+function saveAll(i){
+  if(i === undefined) TEAMS.forEach((_,n)=>dirty.add(n));
+  else dirty.add(i);
+  if(Store.mode === "memory") return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    const batch = [...dirty]; dirty.clear();
+    for(const n of batch){
+      try{ await Store.set(TEAM_KEY(n), JSON.stringify(packTeam(n)), SHARED); }
+      catch(e){ /* keep the in-memory copy either way */ }
+    }
+    lastSync = Date.now();
+    syncNote();
+  }, 500);
+}
+
+function syncNote(){
+  const el = document.getElementById("syncNote");
+  if(!el) return;
+  const where = Store.mode === "cloud"  ? "shared book"
+              : Store.mode === "claude" ? "shared book (in Claude)"
+              : "not saved";
+  const when = lastSync
+    ? "synced " + new Date(lastSync).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"})
+    : "not synced yet";
+  el.textContent = where + " · " + when;
+  el.className = "syncstamp" + (Store.mode === "memory" ? " warn" : "");
+
+  const bar = document.querySelector(".syncbar");
+  const txt = bar && bar.querySelector(".synctext");
+  if(txt){
+    txt.textContent = Store.mode === "memory"
+      ? "No shared book — nothing is being saved. Set LEAGUE_API at the top of the file to share it."
+      : "Shared league book — everyone with the link writes to the same scores";
+    bar.classList.toggle("nostore", Store.mode === "memory");
+  }
+}
+
+let refreshing = false;
+async function refreshBook(manualClick){
+  if(refreshing || Store.mode === "memory") return;
+  const el = document.activeElement;
+  if(!manualClick && el && /INPUT|SELECT|TEXTAREA/.test(el.tagName)) return;
+  refreshing = true;
+  const btn = document.getElementById("refreshBook");
+  if(btn) btn.textContent = "Refreshing…";
+  await loadBook();
+  refreshing = false;
+  if(btn) btn.textContent = "Refresh";
+  renderOwners();
+  renderRoster();
+  loadCardFromStore();
+  renderCardOnly();
+  renderMatchups();
+}
+
+setInterval(()=>{ if(!document.hidden) refreshBook(false); }, 45000);
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) refreshBook(false); });
+
+function regularMatchups(w){
+  return PATTERNS[(w-1)%5].map((p,i)=>({ a:p[0]-1, b:p[1]-1, label:"Game "+(i+1) }));
+}
+
+function teamTotal(w, t){
+  if(t === null || t === undefined) return null;
+  const P = (pts[w] || {})[t] || {};
+  const vals = SLOTS.map(s => num(P[s.key])).filter(v => v !== null);
+  if(!vals.length) return null;
+  return Math.round(vals.reduce((x,y)=>x+y, 0) * 10) / 10;
+}
+
+function standings(){
+  const rows = TEAMS.map((t,i)=>({ i, owner:t.owner, slot:t.slot, w:0, l:0, t:0, pf:0, pa:0 }));
+  for(let wk=1; wk<=REG_WEEKS; wk++){
+    regularMatchups(wk).forEach(m=>{
+      const a = teamTotal(wk, m.a), b = teamTotal(wk, m.b);
+      if(a===null || b===null) return;
+      const A = rows[m.a], B = rows[m.b];
+      A.pf+=a; A.pa+=b; B.pf+=b; B.pa+=a;
+      if(a>b){A.w++;B.l++;} else if(b>a){B.w++;A.l++;} else {A.t++;B.t++;}
+    });
+  }
+  rows.forEach(r=>{
+    r.g = r.w + r.l + r.t;
+    r.pct = r.g ? (r.w + r.t*0.5) / r.g : 0;
+  });
+  const played = rows.some(r=>r.g>0);
+  rows.sort((x,y)=> (y.pct-x.pct) || (y.pf-x.pf) || (x.slot-y.slot));
+  return { rows, played };
+}
+
+function seededTeams(){
+  const { rows, played } = standings();
+  return played ? rows.map(r=>r.i) : [];
+}
+
+function playoffMatchups(w){
+  const seeds = seededTeams();
+  if(w === 16){
+    return [
+      { a:seeds[0] ?? null, b:seeds[3] ?? null, label:"Semifinal — 1 seed vs 4 seed", aLabel:"1 seed", bLabel:"4 seed" },
+      { a:seeds[1] ?? null, b:seeds[2] ?? null, label:"Semifinal — 2 seed vs 3 seed", aLabel:"2 seed", bLabel:"3 seed" }
+    ];
+  }
+  const semis = playoffMatchups(16);
+  const outcome = semis.map(m=>{
+    const a = teamTotal(16, m.a), b = teamTotal(16, m.b);
+    if(m.a===null || m.b===null || a===null || b===null || a===b) return null;
+    return a>b ? {win:m.a, lose:m.b} : {win:m.b, lose:m.a};
+  });
+  return [
+    { a:outcome[0]?.win ?? null, b:outcome[1]?.win ?? null, label:"Championship", aLabel:"Winner, 1/4", bLabel:"Winner, 2/3" },
+    { a:outcome[0]?.lose ?? null, b:outcome[1]?.lose ?? null, label:"Consolation", aLabel:"Loser, 1/4", bLabel:"Loser, 2/3" }
+  ];
+}
+
+const matchupsFor = w => w<=REG_WEEKS ? regularMatchups(w) : playoffMatchups(w);
+
+function weekHasScores(w){
+  return matchupsFor(w).some(m => teamTotal(w,m.a)!==null || teamTotal(w,m.b)!==null);
+}
+
+function renderWeekStrip(){
+  let html = "";
+  for(let w=1; w<=17; w++){
+    const po = w>REG_WEEKS;
+    const liveHere = Feed.on && Feed.week === w && Feed.status === "live";
+    html += '<button class="week-btn ' + (po?"playoff ":"") +
+      (weekHasScores(w)?"played ":"") + (liveHere?"nfllive ":"") +
+      (w===currentNflWeek?"now":"") +
+      '" data-week="' + w + '" aria-pressed="' + (w===matchWeek) + '">' + w + '</button>';
+  }
+  document.getElementById("weekStrip").innerHTML = html;
+  document.querySelectorAll(".week-btn").forEach(b=>{
+    b.addEventListener("click",()=>{
+      matchWeek = +b.dataset.week;
+      renderMatchups();
+      renderRoster();
+      if(Feed.on) pullFeed(matchWeek, true);
+    });
+  });
+  const strip = document.getElementById("weekStrip");
+  const active = strip.querySelector('.week-btn[aria-pressed="true"]');
+  if(active) strip.scrollLeft = active.offsetLeft - (strip.clientWidth - active.offsetWidth) / 2;
+}
+
+const NARROW = () => window.matchMedia("(max-width: 719px)").matches;
+
+/* one starter line, shared by both layouts */
+function slotCells(w, t, s){
+  const L = lineupOf(w, t), P = ptsOf(w, t);
+  const chosen = L[s.key] || "";
+  const taken = Object.keys(L).filter(k=>k!==s.key).map(k=>L[k]);
+  const opts = toPlayers(TEAMS[t])
+    .filter(p => s.takes.includes(p.pos))
+    .sort((x,y)=>x.pick-y.pick)
+    .map(p => '<option value="'+esc(p.name)+'"' + (p.name===chosen?" selected":"") +
+              (taken.includes(p.name)?" disabled":"") + '>' + esc(p.name) + ' — ' + esc(p.team) +
+              (p.bye===w?" (BYE)":"") + '</option>').join("");
+  const chosenPlayer = chosen ? playerByName(t, chosen) : null;
+  const onBye = chosenPlayer && chosenPlayer.bye === w;
+  const src = chosen ? cellSource(w, t, s.key) : "";
+  const inCls = src === "live" ? " auto" : (src === "fin" ? " autofinal" : "");
+  const srcTag = src ? '<span class="src ' + src + '">' +
+      (src === "man" ? "typed" : src === "live" ? "live" : "final") + '</span>' : "";
+
+  let statLine = "";
+  if(chosenPlayer && Feed.on && Feed.week === w){
+    const txt = feedStatText(chosenPlayer);
+    if(txt) statLine = '<span class="statline' +
+        (cellSource(w,t,s.key)==="live" ? " live" : "") + '">' + esc(txt) + '</span>';
+  }
+
+  const lk = slotLocked(w, t, s.key);
+  return {
+    select: '<select class="pick-sel' + (chosen?" filled":"") + (onBye?" bye":"") +
+            (lk?" locked":"") + '" data-team="'+t+'" data-slot="'+s.key+'"' +
+            (lk?' disabled title="Locked — his game has started"':"") +
+            ' aria-label="'+s.label+' starter'+(lk?", locked":"")+'">' +
+            '<option value="">—</option>' + opts + '</select>' + statLine,
+    input:  '<input class="pt-in' + inCls + ((scoresUnlocked && chosen) ? "" : " sealed") +
+            '" type="number" step="0.5" inputmode="decimal" ' +
+            ((scoresUnlocked && chosen) ? ""
+              : 'readonly title="' + (chosen ? "Scores are locked — unlock to correct one"
+                                             : "No starter in this line") + '" ') +
+            'data-team="'+t+'" data-slot="'+s.key+'" value="'+(P[s.key] ?? "") + '" ' +
+            'aria-label="Points for '+s.label+(scoresUnlocked?"":", locked")+'">' + srcTag
+  };
+}
+
+function sheetHTML(m, gi){
+  const w = matchWeek;
+  const teams = [m.a, m.b];
+  const labels = [m.aLabel || "TBD", m.bLabel || "TBD"];
+  const totals = teams.map(t => teamTotal(w, t));
+  const decided = totals[0] !== null && totals[1] !== null;
+  const winner = decided ? (totals[0] > totals[1] ? 0 : (totals[1] > totals[0] ? 1 : -1)) : -2;
+  const known = t => t !== null && t !== undefined;
+  const tagFor = si => '<span class="tagslot">' + (winner===si ? '<span class="mtag">Win</span>'
+                     : (winner===-1 ? '<span class="mtag tie">Tie</span>' : "")) + '</span>';
+  const totalCell = (t,si,cls) =>
+    '<span class="' + cls + (winner===si?" won":"") + '"' +
+    (known(t) ? ' data-team="'+t+'"' : '') + '>' + (totals[si]===null ? "—" : totals[si]) + '</span>';
+
+  let body;
+
+  if(NARROW()){
+    body = '<div class="stack">' + teams.map((t,si)=>{
+      const head = '<div class="tblock-head' + (winner===si?" won":"") + '">' +
+        (known(t) ? '<span class="tnum">#'+TEAMS[t].slot+'</span>' : "") +
+        '<span class="tblock-name">' + (known(t) ? TEAMS[t].owner : labels[si]) + '</span>' +
+        tagFor(si) + '</div>';
+      if(!known(t)) return '<div class="tblock">' + head +
+        '<div class="await">Waiting on the bracket</div></div>';
+      const rows = SLOTS.map(s=>{
+        const c = slotCells(w, t, s);
+        return '<div class="srow"><span class="sslot">'+s.label+':</span>' +
+               '<span class="scell">'+c.select+'</span>' +
+               '<span class="spts">'+c.input+'</span></div>';
+      }).join("");
+      return '<div class="tblock">' + head + rows +
+        '<div class="srow stotal"><span class="sslot">Total</span>' +
+        '<span class="scell"></span><span class="spts">' +
+        totalCell(t, si, "total-val") + '</span></div></div>';
+    }).join("") + '</div>';
+
+  } else {
+    const head = teams.map((t,si)=>
+      '<th class="sheet-team' + (winner===si?" won":"") + '">' +
+        (known(t) ? '<span class="tnum">#'+TEAMS[t].slot+'</span> ' : "") +
+        (known(t) ? TEAMS[t].owner : labels[si]) + ' ' + tagFor(si) +
+      '</th><th class="sheet-pts">Pts</th>').join("");
+
+    const rows = SLOTS.map(s=>{
+      const cells = teams.map(t=>{
+        if(!known(t)) return '<td class="sheet-name"><span class="await">—</span></td><td class="sheet-pts"></td>';
+        const c = slotCells(w, t, s);
+        return '<td class="sheet-name">'+c.select+'</td><td class="sheet-pts">'+c.input+'</td>';
+      }).join("");
+      return '<tr><th class="sheet-slot">'+s.label+':</th>'+cells+'</tr>';
+    }).join("");
+
+    const totalRow = teams.map((t,si)=>
+      '<td class="sheet-name total-blank"></td><td class="sheet-pts total">' +
+        totalCell(t, si, "total-val") + '</td>').join("");
+
+    body = '<div class="sheet-wrap"><table class="sheet">' +
+      '<thead><tr><th class="sheet-slot"></th>' + head + '</tr></thead>' +
+      '<tbody>' + rows + '</tbody>' +
+      '<tfoot><tr><th class="sheet-slot">Total</th>' + totalRow + '</tr></tfoot>' +
+      '</table></div>';
+  }
+
+  return '<div class="matchup"><div class="mlabel">' +
+    (m.label || "Game "+(gi+1)) + '</div>' + body + '</div>';
+}
+
+function renderMatchups(){
+  const w = matchWeek;
+  /* the sheet can sit on a different week from the lineup card, and the
+     kickoff locks need that week's schedule to know what has started */
+  if(!schedule[schedKey(w)]) fetchWeekSchedule(w);
+  const games = matchupsFor(w);
+
+  document.getElementById("matchWeekTitle").textContent =
+    w===16 ? "Week 16 — First round playoffs" :
+    w===17 ? "Week 17 — Championship & consolation" : "Week " + w;
+
+  document.getElementById("matchHint").textContent =
+    w>REG_WEEKS
+      ? (seededTeams().length ? "Seeded from the standings below." : "Seeds appear once regular season results are in.")
+      : (scoresUnlocked
+          ? "Scores are open — type over any number to overrule the feed."
+          : (Feed.on && Feed.week === w
+             ? "Feed is filling the points. Unlock scores to correct one by hand."
+             : "Scores are locked. Unlock to write in points by hand."));
+
+  document.getElementById("matchList").innerHTML = games.map(sheetHTML).join("");
+
+  document.querySelectorAll(".pick-sel").forEach(sel=>{
+    sel.addEventListener("change",()=>{
+      const t = +sel.dataset.team, k = sel.dataset.slot;
+      const L = lineupOf(w, t);
+      if(sel.value) L[k] = sel.value; else delete L[k];
+      /* changing the starter clears whatever was in the points box */
+      delete ptsOf(w, t)[k];
+      delete manualOf(w, t)[k];
+      saveAll(t);
+      applyFeedToSheet();
+      if(t === teamIndex && w === week){ loadCardFromStore(); renderCardOnly(); }
+      renderMatchups();
+      /* the option list changes shape, so this one does need a rebuild —
+         hand focus to the points box for the starter that was just written in */
+      const next = document.querySelector(
+        '#matchList .pt-in[data-team="' + t + '"][data-slot="' + k + '"]');
+      if(next) next.focus();
+    });
+  });
+
+  /* Point entry never triggers a full rebuild. Rebuilding on `change`
+     destroys the very input the owner is tabbing into — the blur fires
+     after the next box is focused, so the click lands on a dead node. */
+  document.querySelectorAll(".pt-in").forEach(inp=>{
+    const commit = ()=>{
+      const t = +inp.dataset.team, k = inp.dataset.slot;
+      const P = ptsOf(w, t), M = manualOf(w, t);
+      if(inp.value === ""){ delete P[k]; delete M[k]; }
+      else { P[k] = Number(inp.value); M[k] = true; }
+      saveAll(t);
+      paintMatchupState();
+      scheduleSlowPaint();
+      if(t === teamIndex && w === week) renderCardOnly();
+    };
+    inp.addEventListener("input", commit);
+    inp.addEventListener("change", commit);
+  });
+
+  renderWeekStrip();
+  renderStandings();
+}
+
+/* standings and the week strip are cheap but jumpy; keep them off the keystroke path */
+let slowPaintTimer = null;
+function scheduleSlowPaint(){
+  clearTimeout(slowPaintTimer);
+  slowPaintTimer = setTimeout(()=>{ renderStandings(); renderWeekStrip(); }, 350);
+}
+
+/* is someone mid-edit? then never yank the DOM out from under them */
+function isEditing(){
+  const el = document.activeElement;
+  return !!(el && /INPUT|SELECT|TEXTAREA/.test(el.tagName));
+}
+
+/* Update every derived visual in the sheet without touching its structure. */
+function paintMatchupState(){
+  const w = matchWeek;
+  const games = matchupsFor(w);
+  const blocks = document.querySelectorAll("#matchList .matchup");
+
+  games.forEach((m, gi)=>{
+    const block = blocks[gi];
+    if(!block) return;
+    const teams  = [m.a, m.b];
+    const totals = teams.map(t => teamTotal(w, t));
+    const decided = totals[0] !== null && totals[1] !== null;
+    const winner = decided ? (totals[0] > totals[1] ? 0 : (totals[1] > totals[0] ? 1 : -1)) : -2;
+
+    block.querySelectorAll(".total-val").forEach(el=>{
+      const t = Number(el.dataset.team);
+      if(Number.isNaN(t)) return;
+      const si = teams.indexOf(t);
+      const v = teamTotal(w, t);
+      el.textContent = v === null ? "—" : v;
+      el.classList.toggle("won", winner === si);
+    });
+
+    block.querySelectorAll(".sheet-team").forEach((th, si)=> th.classList.toggle("won", winner === si));
+    block.querySelectorAll(".tblock-head").forEach((h, si)=> h.classList.toggle("won", winner === si));
+    block.querySelectorAll(".tagslot").forEach((slot, si)=>{
+      slot.innerHTML = winner === si ? '<span class="mtag">Win</span>'
+                     : (winner === -1 ? '<span class="mtag tie">Tie</span>' : "");
+    });
+  });
+
+  /* per-cell provenance: typed / live / final */
+  document.querySelectorAll("#matchList .pt-in").forEach(inp=>{
+    const t = +inp.dataset.team, k = inp.dataset.slot;
+    const src = cellSource(w, t, k);
+    inp.classList.toggle("auto",      src === "live");
+    inp.classList.toggle("autofinal", src === "fin");
+    const cell = inp.parentElement;
+    let tag = cell.querySelector(".src");
+    if(src){
+      if(!tag){ tag = document.createElement("span"); cell.appendChild(tag); }
+      tag.className = "src " + src;
+      tag.textContent = src === "man" ? "typed" : (src === "live" ? "live" : "final");
+    } else if(tag){
+      tag.remove();
+    }
+  });
+}
+
+/* the feed refreshed underneath us — repaint values in place, never rebuild mid-edit */
+function paintFeedValues(){
+  const w = matchWeek;
+  document.querySelectorAll("#matchList .pt-in").forEach(inp=>{
+    if(inp === document.activeElement) return;
+    const t = +inp.dataset.team, k = inp.dataset.slot;
+    const v = ptsOf(w, t)[k];
+    const next = (v === undefined ? "" : String(v));
+    if(inp.value !== next) inp.value = next;
+  });
+  paintMatchupState();
+}
+
+let wasNarrow = NARROW();
+window.addEventListener("resize", ()=>{
+  if(NARROW() !== wasNarrow){ wasNarrow = NARROW(); renderMatchups(); }
+});
+
+function renderStandings(){
+  const { rows, played } = standings();
+  document.getElementById("standingsBody").innerHTML = rows.map((r,i)=>`
+    <tr class="${i===3?"cut":""}">
+      <td class="seed ${played && i<4 ? "in":""}">${played ? i+1 : "—"}</td>
+      <td class="sname">${r.owner}</td>
+      <td class="num">${r.w}</td>
+      <td class="num">${r.l}</td>
+      <td class="num">${r.t}</td>
+      <td class="num">${r.g ? r.pf.toFixed(0) : "—"}</td>
+      <td class="num">${r.g ? r.pa.toFixed(0) : "—"}</td>
+      <td class="num">${r.g ? (r.pf-r.pa>0?"+":"") + (r.pf-r.pa).toFixed(0) : "—"}</td>
+    </tr>`).join("") +
+    `<tr><td colspan="8" class="cut-note">${played ? "Dashed line is the playoff cut — top four advance to Week 16" : "No results yet — fill in a lineup sheet above to start the standings"}</td></tr>`;
+}
+
+/* ============================================================
+   LIVE BAR
+   ============================================================ */
+function renderLiveBar(){
+  const bar  = document.getElementById("liveBar");
+  const text = document.getElementById("liveText");
+  const tog  = document.getElementById("liveToggle");
+  const pull = document.getElementById("livePull");
+  const err  = document.getElementById("liveErr");
+  if(!bar) return;
+
+  bar.className = "livebar";
+  tog.setAttribute("aria-pressed", Feed.on);
+  tog.textContent = Feed.on ? "Turn live feed off" : "Turn live feed on";
+  pull.disabled = !Feed.on || Feed.busy;
+
+  if(!Feed.on){
+    text.textContent = "Live feed off — points are typed in by hand";
+    err.hidden = true;
+    return;
+  }
+
+  if(Feed.status === "loading"){
+    text.textContent = "Reading box scores for Week " + (Feed.week ?? matchWeek) + "…";
+    err.hidden = true;
+    return;
+  }
+
+  if(Feed.status === "error"){
+    bar.classList.add("err");
+    text.textContent = "Couldn't reach the box scores";
+    err.hidden = false;
+    err.innerHTML =
+      "<b>The feed request failed: " + esc(Feed.error) + "</b><br>" +
+      "Almost always this is the browser blocking a cross-site request, not a bug in the sheet. " +
+      "ESPN's endpoints are undocumented and can also change or rate-limit without notice. " +
+      "Save this file and open it directly in a browser rather than running it inside an embedded frame, " +
+      "and if it still fails, keep typing the points in by hand — every other part of the book works without the feed.";
+    return;
+  }
+
+  const mood = Feed.status === "live" ? "on" : (Feed.status === "done" ? "done" : "");
+  if(mood) bar.classList.add(mood);
+  const when = Feed.lastPull
+    ? new Date(Feed.lastPull).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit",second:"2-digit"})
+    : "—";
+  const matched = Object.keys(Feed.players).length + Object.keys(Feed.defenses).length;
+  text.textContent = "Week " + Feed.week + " · " + Feed.message +
+    " · " + matched + " stat lines via " + (Feed.source || "—") + " · read " + when +
+    (Feed.status === "live" ? " · refreshing every 45s" : "");
+
+  const partial = Object.values(Feed.defenses).some(d => d.partial);
+  const missing = Feed.source && Feed.source.indexOf("Sleeper") === 0 ? Sleeper.unresolved() : [];
+  const notes = [];
+  if(Feed.softError) notes.push(esc(Feed.softError));
+  if(partial) notes.push("Some defences have no opponent for this week, so the rushing and passing yards-allowed ladders read 0 for them. Switch Source to \"Sleeper + ESPN\" to fill those in.");
+  if(Feed.source && Feed.source.indexOf("Sleeper") === 0 && !Sleeper.sackKey()
+     && Object.keys(Feed.defenses).length){
+    notes.push("Sleeper did not report sack yardage this week, so passing yards allowed is gross rather than net. That understates defensive scores slightly; the matchup sheet shows the figure used.");
+  }
+  if(missing.length) notes.push("No Sleeper id for: " + esc(missing.slice(0,6).join(", ")) +
+    (missing.length > 6 ? " and " + (missing.length-6) + " more" : "") + ". Score them by hand.");
+
+  if(notes.length){
+    err.hidden = false;
+    err.className = "errnote soft";
+    err.innerHTML = notes.join("<br>");
+  } else {
+    err.hidden = true;
+  }
+}
+
+function wireLive(){
+  const sel = document.getElementById("providerSel");
+  sel.value = Feed.provider;
+  sel.addEventListener("change", async ()=>{
+    Feed.provider = sel.value;
+    Feed.gameCache = {};
+    if(Store.mode !== "memory"){
+      try{ await Store.set(PROVIDER_KEY, JSON.stringify(Feed.provider), false); }catch(e){}
+    }
+    if(Feed.on) pullFeed(matchWeek, true); else renderLiveBar();
+  });
+
+  document.getElementById("liveToggle").addEventListener("click", ()=>{
+    Feed.on = !Feed.on;
+    if(Feed.on){
+      renderLiveBar();
+      pullFeed(matchWeek, true);
+      startFeed();
+    } else {
+      stopFeed();
+      Feed.status = "off";
+      renderLiveBar();
+      renderMatchups();
+      renderCardOnly();
+      renderRoster();
+    }
+  });
+
+  document.getElementById("livePull").addEventListener("click", ()=> pullFeed(matchWeek, true));
+}
+
+/* ============================================================
+   APPEARANCE
+   ============================================================ */
+const THEME_KEY = "league2026-theme";
+const PROVIDER_KEY = "league2026-provider";
+
+async function loadProvider(){
+  if(Store.mode === "memory") return;
+  try{
+    const r = await Store.get(PROVIDER_KEY, false);
+    if(r && r.value){
+      const v = JSON.parse(r.value);
+      if(["auto","sleeper","espn"].includes(v)) Feed.provider = v;
+    }
+  }catch(e){ /* default stands */ }
+}
+const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+let themeChoice = null;
+
+function applyTheme(){
+  const dark = themeChoice ? themeChoice === "dark" : systemDark.matches;
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  const btn = document.getElementById("themeToggle");
+  if(btn){
+    btn.querySelector(".glyph").textContent = dark ? "☀" : "☾";
+    btn.querySelector(".label").textContent = dark ? "Light" : "Dark";
+    btn.title = dark ? "Switch to light appearance" : "Switch to dark appearance";
+  }
+  const meta = document.getElementById("themeColor");
+  if(meta) meta.setAttribute("content", dark ? "#14161B" : "#F4F4EE");
+}
+
+async function loadTheme(){
+  if(Store.mode === "memory") return;
+  try{
+    const r = await Store.get(THEME_KEY, false);
+    if(r && r.value) themeChoice = JSON.parse(r.value);
+  }catch(e){ /* no preference saved */ }
+  applyTheme();
+}
+
+function wireTheme(){
+  applyTheme();
+  document.getElementById("themeToggle").addEventListener("click", async ()=>{
+    const dark = document.documentElement.dataset.theme === "dark";
+    themeChoice = dark ? "light" : "dark";
+    applyTheme();
+    if(Store.mode !== "memory"){
+      try{ await Store.set(THEME_KEY, JSON.stringify(themeChoice), false); }catch(e){}
+    }
+  });
+  systemDark.addEventListener("change", ()=>{ if(!themeChoice) applyTheme(); });
+}
+
+/* ============================================================
+   IN-PAGE NAVIGATION
+   ============================================================ */
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function scrollToEl(el){
+  if(!el) return;
+  const bar = document.querySelector(".topbar");
+  const offset = (bar ? bar.offsetHeight : 56) + 10;
+  const top = el.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({ top: Math.max(top, 0), behavior: reduceMotion ? "auto" : "smooth" });
+}
+
+function wireNav(){
+  const links = [...document.querySelectorAll('a[href^="#"]')];
+  links.forEach(a=>{
+    a.addEventListener("click", e=>{
+      const target = document.querySelector(a.getAttribute("href"));
+      if(!target) return;
+      e.preventDefault();
+      scrollToEl(target);
+    });
+  });
+
+  document.querySelector(".brand").addEventListener("click", ()=>{
+    window.scrollTo({ top:0, behavior: reduceMotion ? "auto" : "smooth" });
+  });
+
+  const navLinks = [...document.querySelectorAll(".topnav a")];
+  const sections = navLinks.map(a=>document.querySelector(a.getAttribute("href")));
+  const mark = ()=>{
+    const y = window.scrollY + 110;
+    let cur = -1;
+    sections.forEach((el,i)=>{ if(el && el.offsetTop <= y) cur = i; });
+    navLinks.forEach((a,i)=>a.classList.toggle("current", i === cur));
+  };
+  window.addEventListener("scroll", mark, {passive:true});
+  mark();
+}
+
+/* a short-lived note in the status strip, without disturbing the card */
+let flashTimer = null;
+function flashStatus(msg){
+  const el = document.getElementById("status");
+  if(!el) return;
+  el.dataset.flash = "1";
+  el.className = "status warn";
+  el.textContent = msg;
+  clearTimeout(flashTimer);
+  flashTimer = setTimeout(()=>{ delete el.dataset.flash; renderStatus(); }, 3200);
+}
+
+function paintLockBtn(){
+  const b = document.getElementById("lockToggle");
+  b.textContent = locksOn ? "Locks on" : "Locks OFF";
+  b.setAttribute("aria-pressed", locksOn);
+  b.classList.toggle("warnbtn", !locksOn);
+}
+
+function showUnlock(on){
+  const box = document.getElementById("unlockBox");
+  box.hidden = !on;
+  if(on){
+    const f = document.getElementById("unlockPw");
+    f.value = ""; f.classList.remove("bad"); f.focus();
+  }
+}
+
+function tryUnlock(){
+  const f = document.getElementById("unlockPw");
+  if(wordHash(f.value) !== UNLOCK_HASH){
+    f.classList.add("bad");
+    f.value = "";
+    f.focus();
+    flashStatus("That is not the commissioner's word. Locks stay on.");
+    return;
+  }
+  locksOn = false;
+  showUnlock(false);
+  paintLockBtn();
+  renderCard();
+  renderMatchups();
+  flashStatus("Locks off — commissioner override. Reload restores them.");
+}
+
+function showScoreGate(on){
+  const box = document.getElementById("scoreGate");
+  box.hidden = !on;
+  if(on){
+    const f = document.getElementById("scorePw");
+    f.value = ""; f.classList.remove("bad"); f.focus();
+  }
+}
+
+function paintScoreBtn(){
+  const b = document.getElementById("scoreLock");
+  b.textContent = scoresUnlocked ? "Scores OPEN" : "Scores locked";
+  b.setAttribute("aria-pressed", !scoresUnlocked);
+  b.classList.toggle("warnbtn", scoresUnlocked);
+}
+
+function wireScoreLock(){
+  const b = document.getElementById("scoreLock");
+  const pw = document.getElementById("scorePw");
+  paintScoreBtn();
+
+  b.addEventListener("click", ()=>{
+    if(scoresUnlocked){                 // sealing back up never asks
+      scoresUnlocked = false;
+      showScoreGate(false);
+      paintScoreBtn();
+      renderMatchups();
+      return;
+    }
+    showScoreGate(true);
+  });
+
+  document.getElementById("scoreGo").addEventListener("click", ()=>{
+    if(wordHash(pw.value) !== UNLOCK_HASH){
+      pw.classList.add("bad"); pw.value = ""; pw.focus();
+      return;
+    }
+    scoresUnlocked = true;
+    showScoreGate(false);
+    paintScoreBtn();
+    renderMatchups();
+  });
+  document.getElementById("scoreCancel").addEventListener("click", ()=> showScoreGate(false));
+  pw.addEventListener("keydown", e=>{
+    if(e.key === "Enter") document.getElementById("scoreGo").click();
+    if(e.key === "Escape") showScoreGate(false);
+  });
+}
+
+function wireLocks(){
+  const b = document.getElementById("lockToggle");
+  paintLockBtn();
+
+  b.addEventListener("click", ()=>{
+    if(locksOn){
+      showUnlock(true);          // switching off needs the word
+      return;
+    }
+    locksOn = true;              // switching back on never does
+    showUnlock(false);
+    paintLockBtn();
+    renderCard();
+    renderMatchups();
+    flashStatus("Locks back on.");
+  });
+
+  document.getElementById("unlockGo").addEventListener("click", tryUnlock);
+  document.getElementById("unlockCancel").addEventListener("click", ()=> showUnlock(false));
+  document.getElementById("unlockPw").addEventListener("keydown", e=>{
+    if(e.key === "Enter") tryUnlock();
+    if(e.key === "Escape") showUnlock(false);
+  });
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+Store.detect().then(loadBook).then(loadStats).then(loadProvider).then(loadSchedule).then(()=>{
+  renderOwners();
+  renderTabs();
+  renderRoster();
+  renderTeamChooser();
+  renderWeeks();
+  wireRosterEditing();
+  wireNav();
+  wireTheme();
+  loadTheme();
+  wireLive();
+  wireLocks();
+  wireScoreLock();
+  renderLiveBar();
+  document.getElementById("refreshBook").addEventListener("click", ()=> refreshBook(true));
+  document.getElementById("nowBtn").addEventListener("click", ()=> goToWeek(currentNflWeek));
+  loadCardFromStore();
+  renderCard();
+  renderMatchups();
+
+  /* Open on the live NFL week. Render first, then detect, so a slow or
+     blocked lookup never holds up the page. */
+  detectNflWeek().then(w=>{
+    if(!w) { renderWeekNote(); return; }
+    currentNflWeek = w;
+    if(w !== week) goToWeek(w);
+    else renderWeekNote();
+    renderWeekStrip();
+  });
+});
+</script>
+</body>
+</html>
