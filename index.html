@@ -1299,7 +1299,7 @@ footer p{font-family:var(--mono);font-size:11.5px;color:var(--graphite);margin-t
         <h3>General</h3>
         <ol>
           <li>Rosters total no more than 18 players. Fewer than 18 is allowed.</li>
-          <li>Start 1 quarterback, 1 kicker, 1 defense, at least 1 but no more than 2 running backs, and any combination of wide receivers and tight ends to fill 8 starting positions.</li>
+          <li>Start 1 quarterback, 1 kicker, 1 defense, at least 1 running back, and any combination of wide receivers and tight ends to fill 9 starting positions.</li>
           <li>The draft runs after the final preseason game and before the first regular season game.</li>
           <li>Lineups are due by 12:00 Sunday afternoon. Thursday and Saturday players must be called in before game time that day. Last week's lineup stands unless you change it.</li>
           <li>Each team gets 5 transactions per season — a roster addition or a trade. Trades have no player limit.</li>
@@ -1432,7 +1432,7 @@ const SLOTS = [
   { key:"WRTE",  label:"WR/TE", takes:["WR","TE"] },
   { key:"PK",    label:"PK",    takes:["K"] },
   { key:"DEF",   label:"DEF",   takes:["DEF"] },
-  { key:"WC",    label:"WC",    takes:["QB","RB","WR","TE"] }
+  { key:"WC",    label:"WC",    takes:["QB","RB","WR","TE","K","DEF"] }
 ];
 
 const POS_ORDER = { QB:0, RB:1, WR:2, TE:3, K:4, DEF:5 };
@@ -3804,7 +3804,7 @@ function renderPool(){
 
   document.getElementById("poolTitle").textContent = slot.label + " — eligible";
   document.getElementById("poolSub").textContent =
-    slot.key === "WC" ? "Wild card takes any QB, RB, WR or TE."
+    slot.key === "WC" ? "Wild card takes anyone on the roster, a second kicker or defence included."
     : "Accepts " + slot.takes.join(" or ") + ".";
 
   const list = document.getElementById("poolList");
@@ -3857,7 +3857,6 @@ function renderStatus(){
     const g = matchupFor(p, week);
     return (g && g.bye) || (!g && p.bye === week);
   }).map(s=>card[s.key].name);
-  const rbCount = SLOTS.filter(s=>card[s.key] && card[s.key].pos === "RB").length;
 
   let cls = "", lines = [];
   if(filled < SLOTS.length){
@@ -3865,10 +3864,9 @@ function renderStatus(){
   } else {
     lines.push("All 9 lines filled.");
   }
-  if(rbCount > 2) lines.push(`${rbCount} running backs started — the rule caps you at 2.`);
   if(byes.length) lines.push(`On bye in Week ${week}: ${byes.join(", ")}.`);
 
-  if(byes.length || rbCount > 2) cls = "warn";
+  if(byes.length) cls = "warn";
   else if(filled === SLOTS.length) cls = "ok";
 
   const lockedCount = SLOTS.filter(s=>slotLocked(week, teamIndex, s.key)).length;
@@ -3889,10 +3887,8 @@ document.getElementById("autoFill").addEventListener("click",()=>{
   order.forEach(key=>{
     if(card[key]) return;                        // locked line, leave it
     const slot = SLOTS.find(s=>s.key===key);
-    let rbUsed = Object.values(card).filter(p=>p.pos==="RB").length;
     const pick = rosterOf()
       .filter(p=>slot.takes.includes(p.pos) && !taken.has(p.name) && !playerLocked(p, week))
-      .filter(p=>!(p.pos==="RB" && rbUsed>=2))
       .sort((a,b)=>{
         const aBye = a.bye===week ? 1 : 0, bBye = b.bye===week ? 1 : 0;
         return aBye-bBye || a.pick-b.pick;
