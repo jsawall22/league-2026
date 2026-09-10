@@ -1903,18 +1903,44 @@ function feedLineFor(player){
 }
 
 /* live points for one rostered player, or null if the feed has nothing */
+/* did this pull actually return anything? */
+function feedHasData(){
+  return Object.keys(Feed.players).length > 0 || Object.keys(Feed.defenses).length > 0;
+}
+
 function feedPointsFor(player){
   const line = feedLineFor(player);
-  if (!line) return null;
-  const res = Score.forPosition(player.pos, line);
-  if (!res) return null;
-  return { pts: res.pts, parts: res.parts, state: line.state, detail: line.detail, line };
+  if (line){
+    const res = Score.forPosition(player.pos, line);
+    if (!res) return null;
+    return { pts: res.pts, parts: res.parts, state: line.state, detail: line.detail, line };
+  }
+
+  /* No line in the box scores. ESPN only lists players who recorded a stat, so
+     an inactive or unused man is simply absent. Once his game is under way that
+     is not missing information — he has scored nothing, and a plain 0 says so
+     far better than a blank. Before kickoff we genuinely do not know. */
+  if(!feedHasData()) return null;
+  const g = matchupFor(player, Feed.week);
+  if(!g || g.bye) return null;
+  if(g.state === "in" || g.state === "post"){
+    return { pts: 0, parts: [], state: g.state, detail: g.detail, line: null, noLine: true };
+  }
+  return null;
 }
 
 /* a compact stat line for display under a name */
 function feedStatText(player){
   const l = feedLineFor(player);
-  if (!l) return "";
+  if (!l){
+    /* explain a zero rather than leaving it looking like a gap */
+    if(!feedHasData()) return "";
+    const g = matchupFor(player, Feed.week);
+    if(!g || g.bye) return "";
+    if(g.state === "post") return "no stats recorded — inactive or did not play";
+    if(g.state === "in")   return "no stats yet";
+    return "";
+  }
   if (player.pos === "DEF"){
     /* 999 / 99 are internal "no data" sentinels — never show them as numbers */
     const ru = l.rushYdsAllowed >= 999 ? "rush n/a" : l.rushYdsAllowed + " ru";
