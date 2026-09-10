@@ -654,6 +654,7 @@ input.pt-in.sealed.autofinal{color:var(--moss)}
   border:1px solid var(--moss);color:var(--moss);line-height:1.7;
 }
 .mtag.tie{border-color:var(--graphite);color:var(--graphite)}
+.mtag.playing{border-color:var(--ochre);color:var(--ochre)}
 
 /* lineup sheet inside a matchup */
 .sheet-wrap{overflow-x:auto;border:1.5px solid var(--ink);background:var(--paper-2);margin-top:6px}
@@ -1232,13 +1233,6 @@ footer p{font-family:var(--mono);font-size:11.5px;color:var(--graphite);margin-t
       <span class="dot" aria-hidden="true"></span>
       <span class="livetext" id="liveText">Live feed off — points are typed in by hand</span>
       <span class="liveactions">
-        <label class="srclabel">Source
-          <select class="srcsel" id="providerSel" aria-label="Live stat source">
-            <option value="auto">Sleeper + ESPN</option>
-            <option value="sleeper">Sleeper only</option>
-            <option value="espn">ESPN only</option>
-          </select>
-        </label>
         <button class="mini" id="liveToggle" aria-pressed="false">Turn live feed on</button>
         <button class="mini" id="livePull" disabled>Pull box scores</button>
       </span>
@@ -1880,223 +1874,10 @@ const ESPN = (() => {
 })();
 
 /* ============================================================
-   SLEEPER — second source
-   api.sleeper.app is free, needs no key, and returns every
-   player's week in ONE request instead of one per game.
-   Stats are keyed by Sleeper player id, so we keep a small
-   name -> id map for our 108 players rather than re-downloading
-   their whole player file (several MB) on every load.
-   ============================================================ */
-const SLEEPER_IDS_KEY = "league2026-sleeper-ids";
-const SLEEPER_TEAMS_KEY = "league2026-sleeper-teams";
-
-const Sleeper = (() => {
-  const BASE = "https://api.sleeper.app/v1";
-  let idMap  = null;   // normalised roster name -> sleeper id
-  let teamOf = null;   // sleeper id -> NFL team abbreviation (every player)
-  let sackKeyFound = null;
-  /* Names we have already looked for in Sleeper's file. A name that simply
-     isn't there — a camp arm, a practice-squad call-up — must not re-trigger
-     the multi-megabyte download on every poll. But a name we have never
-     looked for, such as a player just added to a roster, must. */
-  let triedNames = new Set();
-  const ambiguous = {};   // names Sleeper holds more than one record for
-
-  /* Sleeper has never documented a sack-yardage key publicly, so probe. */
-  const SACK_KEYS = ["pass_sack_yds","pass_sack_yd","pass_sacked_yds","pass_sack_yards"];
-
-  async function loadMaps(force){
-    if(idMap && teamOf && !force) return false;
-
-    if(!force && Store.mode !== "memory"){
-      try{
-        const [a,b] = await Promise.all([
-          Store.get(SLEEPER_IDS_KEY, SHARED),
-          Store.get(SLEEPER_TEAMS_KEY, SHARED)
-        ]);
-        const ids = a && a.value ? JSON.parse(a.value) : null;
-        const tms = b && b.value ? JSON.parse(b.value) : null;
-        if(ids && Object.keys(ids).length && tms && Object.keys(tms).length){
-          idMap = ids; teamOf = tms; return false;
-        }
-      }catch(e){ /* not cached */ }
-    }
-
-    /* one download builds both maps */
-    const all = await ESPN.getJSON(BASE + "/players/nfl");
-
-    /* what we are looking for, and what we know about each man */
-    const want = new Map();
-    TEAMS.forEach(t => toPlayers(t).forEach(p=>{
-      if(p.pos !== "DEF") want.set(ESPN.normName(p.name), { pos:p.pos, team:p.team });
-    }));
-
-    /* Names are not unique in Sleeper's file — there is a Josh Allen at
-       quarterback and another at linebacker, and retired players keep their
-       records. Collect every candidate, then choose on merit rather than
-       taking whichever happened to come first. */
-    const cands = new Map();
-    teamOf = {};
-    Object.keys(all).forEach(id=>{
-      const a = all[id];
-      if(!a) return;
-      if(a.team) teamOf[id] = a.team;
-      if(!a.first_name) return;
-      const key = ESPN.normName((a.first_name || "") + " " + (a.last_name || ""));
-      if(!want.has(key)) return;
-      if(!cands.has(key)) cands.set(key, []);
-      cands.get(key).push({ id, pos:a.position || "", team:a.team || "",
-                            active:a.active !== false });
-    });
-
-    const alias = ab => ESPN.TEAM_ALIAS[ab] || ab;
-    idMap = {};
-    want.forEach((meta, key)=>{
-      const list = cands.get(key);
-      if(!list || !list.length) return;
-      /* rank: right position and right team beats right position beats active */
-      const score = c => (c.pos === meta.pos ? 8 : 0)
-                       + ((c.team && (c.team === meta.team || alias(c.team) === alias(meta.team))) ? 4 : 0)
-                       + (c.active ? 2 : 0)
-                       + (c.team ? 1 : 0);
-      const best = list.slice().sort((a,b)=> score(b) - score(a))[0];
-      idMap[key] = best.id;
-      if(list.length > 1) ambiguous[key] = list.length;
-    });
-
-    if(Store.mode !== "memory"){
-      try{
-        await Store.set(SLEEPER_IDS_KEY,   JSON.stringify(idMap),  SHARED);
-        await Store.set(SLEEPER_TEAMS_KEY, JSON.stringify(teamOf), SHARED);
-      }catch(e){}
-    }
-    want.forEach((v,k)=> triedNames.add(k));   // everyone current has now been searched for
-    return true;                    // did hit the network
-  }
-
-  /* any rostered skill player we could not resolve to a Sleeper id */
-  function unresolved(){
-    const map = idMap || {};
-    const miss = [];
-    TEAMS.forEach(t => toPlayers(t).forEach(p=>{
-      if(p.pos !== "DEF" && !map[ESPN.normName(p.name)]) miss.push(p.name);
-    }));
-    return miss;
-  }
-
-  const sackKey = () => sackKeyFound;
-
-  async function week(season, w, sched){
-    const fresh = await loadMaps(false);
-
-    /* look for anyone rostered whose name we have never searched for */
-    const wanted = [];
-    TEAMS.forEach(t => toPlayers(t).forEach(pl=>{
-      if(pl.pos !== "DEF") wanted.push(ESPN.normName(pl.name));
-    }));
-    const untried = wanted.filter(n => !idMap[n] && !triedNames.has(n));
-
-    if(untried.length && !fresh){
-      await loadMaps(true);            // a roster changed — go and look once
-    }
-    wanted.forEach(n => triedNames.add(n));
-
-    const stats = await ESPN.getJSON(BASE + "/stats/nfl/regular/" + season + "/" + w);
-    const players = {}, defenses = {};
-
-    Object.keys(idMap).forEach(key=>{
-      const s = stats[idMap[key]];
-      if(!s) return;
-      players[key] = {
-        passYds: s.pass_yd || 0, passTD: s.pass_td || 0, intThrown: s.pass_int || 0,
-        rushYds: s.rush_yd || 0, rushTD: s.rush_td || 0,
-        recYds:  s.rec_yd  || 0, recTD:  s.rec_td  || 0, rec: s.rec || 0,
-        fgMade:  s.fgm || 0, fgAtt: s.fga || 0,
-        xpMade:  s.xpm || 0, xpAtt: s.xpa || 0,
-        fumLost: s.fum_lost || 0,
-        state: "post", detail: ""
-      };
-    });
-
-    /* ---- rebuild each team's offensive output from its players ----
-       Team rushing = every player's rushing yards.
-       Team net passing = every player's passing yards, less sack yardage,
-       which is how the NFL computes it. That gives us what the opposing
-       defence gave up without needing anyone's team-stat endpoint. */
-    const agg = {};
-    sackKeyFound = null;
-    Object.keys(stats).forEach(id=>{
-      const t = teamOf[id];
-      if(!t) return;                       // team defences and unknown ids
-      const s = stats[id];
-      if(!s) return;
-      const A = (agg[t] ||= { rush:0, pass:0, sackYds:0, giveaways:0 });
-      A.rush += s.rush_yd || 0;
-      A.pass += s.pass_yd || 0;
-      /* a team's giveaways are exactly what the opposing defence took away */
-      A.giveaways += (s.pass_int || 0) + (s.fum_lost || 0);
-      for(const k of SACK_KEYS){
-        if(s[k] != null){ A.sackYds += Number(s[k]) || 0; sackKeyFound = k; break; }
-      }
-    });
-
-    /* ---- team defences ---- */
-    TEAMS.forEach(t => toPlayers(t).forEach(p=>{
-      if(p.pos !== "DEF") return;
-      const alt = ESPN.TEAM_ALIAS[p.team];
-      const s = stats[p.team] || (alt ? stats[alt] : null);
-
-      /* who did they play? taken from the week's schedule */
-      const g = sched ? (sched[p.team] || (alt ? sched[alt] : null)) : null;
-      const oppAbbr = g && !g.bye ? g.opp : null;
-      const oppAgg = oppAbbr
-        ? (agg[oppAbbr] || agg[ESPN.TEAM_ALIAS[oppAbbr]] || null)
-        : null;
-
-      if(!s && !oppAgg) return;            // nothing at all for this defence
-
-      const haveYards = !!oppAgg;
-      /* Points allowed: prefer Sleeper's own figure, else the scoreboard.
-         Takeaways: prefer Sleeper's, else the opponent's giveaways summed
-         from their players — covers any week Sleeper ships no DST entry. */
-      const ptsAllowed = (s && s.pts_allow != null) ? s.pts_allow
-                       : (g && g.oppScore != null ? g.oppScore : 99);
-      const takeaways  = s ? (s.int || 0) + (s.fum_rec || 0)
-                       : (haveYards ? oppAgg.giveaways : 0);
-
-      /* defensive and special-teams touchdowns are only in the DST entry */
-      const missingTD = !s;
-
-      defenses[ESPN.normName(p.name)] = {
-        takeaways,
-        defTD:     s ? (s.def_td || 0) + (s.def_st_td || 0) : 0,
-        safeties:  s ? (s.safe || 0) : 0,
-        ptsAllowed,
-        rushYdsAllowed: haveYards ? oppAgg.rush : 999,
-        passYdsAllowed: haveYards ? Math.max(0, oppAgg.pass - oppAgg.sackYds) : 999,
-        opp: oppAbbr || "",
-        sackYds: haveYards ? oppAgg.sackYds : 0,
-        derived: haveYards,
-        noDst: missingTD,
-        ptsFromBoard: !(s && s.pts_allow != null) && g && g.oppScore != null,
-        partial: !haveYards,
-        state: "post", detail: ""
-      };
-    }));
-
-    return { players, defenses, agg };
-  }
-
-  const idOf = k => idMap ? idMap[k] : undefined;
-  return { week, loadMaps, unresolved, sackKey, idOf, ambiguous };
-})();
-
-/* ============================================================
    FEED STATE
    ============================================================ */
 const Feed = {
   on: false,
-  provider: "auto",     // auto | sleeper | espn
   source: "",           // which one actually answered
   softError: "",
   week: null,
@@ -2226,86 +2007,13 @@ async function pullFeed(week, manual){
       e.state !== "pre" && e.teams.some(a => want.has(a))
     );
 
-    if(Feed.provider === "sleeper" || Feed.provider === "auto"){
-      /* the defence ladders need to know who each team played */
-      await fetchWeekSchedule(week);
-      const sched = schedule[schedKey(week)] || null;
-
-      let sleeperOK = false;
-      try{
-        const s = await Sleeper.week(ESPN.SEASON, week, sched);
-        Feed.players  = s.players;
-        Feed.defenses = s.defenses;
-        Feed.source   = "Sleeper";
-        sleeperOK = Object.keys(s.players).length > 0;
-        if(!sleeperOK) Feed.softError = "Sleeper returned no lines for this week — using ESPN.";
-      }catch(err){
-        if(Feed.provider === "sleeper") throw err;
-        Feed.softError = "Sleeper unavailable (" + (err.message || err) + ") — fell back to ESPN.";
-      }
-
-      /* Whatever the chosen source, a defence with no opponent yardage is
-         useless. Top those up from ESPN box scores — this is the preseason
-         case, where Sleeper publishes thin or no team data. */
-      if(!sleeperOK && Feed.provider === "auto"){
-        const espn = await pullEspn(relevant);
-        Feed.players = espn.players; Feed.defenses = espn.defenses; Feed.source = "ESPN";
-      } else if(sleeperOK && Feed.provider === "auto"){
-        /* Which rostered defences still lack usable numbers? A defence can be
-           missing outright (Sleeper had neither a DST entry nor opponent
-           players) as well as merely incomplete, so check the roster rather
-           than what happens to be in the map. */
-        const rosterDefs = [];
-        TEAMS.forEach(t => toPlayers(t).forEach(p=>{
-          if(p.pos === "DEF") rosterDefs.push({ key: ESPN.normName(p.name), team: p.team });
-        }));
-        const needy = rosterDefs.filter(({key, team})=>{
-          /* a defence on bye, or whose game has not kicked off, is not missing
-             data — do not spend box-score requests chasing it */
-          const alt = ESPN.TEAM_ALIAS[team];
-          const g = sched ? (sched[team] || (alt ? sched[alt] : null)) : null;
-          if(!g || g.bye || g.state === "pre") return false;
-          const d = Feed.defenses[key];
-          return !d || d.partial ||
-                 d.rushYdsAllowed >= 999 || d.passYdsAllowed >= 999;
-        });
-        const needyTeams = new Set(needy.map(x => x.team));
-        const needyKeys  = needy.map(x => x.key);
-
-        if(needyKeys.length && relevant.length){
-          /* pull only the games those defences played in, not the whole slate */
-          const needTeams = new Set();
-          needyTeams.forEach(t=>{
-            needTeams.add(t);
-            if(ESPN.TEAM_ALIAS[t]) needTeams.add(ESPN.TEAM_ALIAS[t]);
-          });
-          const needGames = relevant.filter(e => e.teams.some(a => needTeams.has(a)));
-          const espn = await pullEspn(needGames.length ? needGames : relevant);
-          let filled = 0;
-          needyKeys.forEach(k=>{
-            if(espn.defenses[k]){ Feed.defenses[k] = espn.defenses[k]; filled++; }
-          });
-          if(filled){
-            Feed.source = "Sleeper + ESPN";
-            Feed.softError = "Sleeper had no opponent stats for " + filled +
-              " defence(s) this week, so those were scored from ESPN box scores instead.";
-          }
-        }
-        /* carry live game state from the schedule without extra requests */
-        if(sched){
-          Object.keys(Feed.players).forEach(k=>{
-            const tm = Feed.players[k].team;
-            const g = tm ? sched[tm] : null;
-            if(g){ Feed.players[k].state = g.state; Feed.players[k].detail = g.detail; }
-          });
-        }
-      }
-    } else {
-      const espn = await pullEspn(relevant);
-      Feed.players = espn.players;
-      Feed.defenses = espn.defenses;
-      Feed.source = "ESPN";
-    }
+    /* ESPN is the only source: one scoreboard call for the slate, then one box
+       score per relevant game. Player stats, team stats and game status all
+       arrive together, so nothing has to be inferred or patched afterwards. */
+    const espn = await pullEspn(relevant);
+    Feed.players  = espn.players;
+    Feed.defenses = espn.defenses;
+    Feed.source   = "ESPN";
 
     Feed.lastPull = Date.now();
 
@@ -3410,9 +3118,20 @@ function saveStats(){
 function captureWeek(w){
   const rec = (playerWeeks[w] ||= {});
   let any = false;
+  /* Only prune when the pull actually returned something. A failed or empty
+     read must never be mistaken for "nobody scored". */
+  const gotData = Object.keys(Feed.players).length > 0 ||
+                  Object.keys(Feed.defenses).length > 0;
   TEAMS.forEach(t => toPlayers(t).forEach(p=>{
     const fp = feedPointsFor(p);
     if(fp){ rec[pkey(p)] = fp.pts; any = true; }
+    else if(gotData && rec[pkey(p)] !== undefined){
+      /* No line in the box scores means he did not play, or his game has not
+         started. A figure banked earlier is wrong and has to go, or a bad
+         reading would outlive the thing that caused it. */
+      delete rec[pkey(p)];
+      any = true;
+    }
   }));
   const games = Feed.games || [];
   const played = games.filter(e => e.state !== "pre");
@@ -3425,6 +3144,7 @@ function captureWeek(w){
 
 /* a number the commissioner typed for this player that week outranks the feed */
 function manualPtsForPlayer(player, w){
+  if(!player) return null;
   for(let t = 0; t < TEAMS.length; t++){
     const L = lineups[w]?.[t];
     if(!L) continue;
@@ -3439,6 +3159,7 @@ function manualPtsForPlayer(player, w){
 }
 
 function playerWeekPts(player, w){
+  if(!player) return null;
   const man = manualPtsForPlayer(player, w);
   if(man !== null) return man;
   const v = playerWeeks[w]?.[pkey(player)];
@@ -3446,6 +3167,7 @@ function playerWeekPts(player, w){
 }
 
 function playerSeason(player, t){
+  if(!player) return { total:0, weeks:0, best:null, since:0, sinceWeeks:0, from:1, midSeason:false };
   const from = (t === undefined) ? 1 : acqWeek(t, player.name);
   let total = 0, weeks = 0, best = null, since = 0, sinceWeeks = 0;
   for(let w = 1; w <= 17; w++){
@@ -3464,9 +3186,9 @@ function playerSeason(player, t){
 
 /* ============================================================
    CURRENT NFL WEEK
-   Sleeper publishes league state at /state/nfl — a tiny, keyless
-   call. ESPN's scoreboard carries the same number as a fallback,
-   and if the page is offline we estimate from the calendar.
+   Read from ESPN's scoreboard, which reports the week it is
+   currently showing. If the page is offline we count weeks from
+   the season opener instead.
    ============================================================ */
 let currentNflWeek = null;
 
@@ -3475,38 +3197,23 @@ const SEASON_OPENER = new Date(2026, 8, 9);   // 9 Sep 2026
 
 function estimateWeek(){
   const now = new Date();
-  if(now < SEASON_OPENER) return null;             // preseason or earlier
+  if(now < SEASON_OPENER) return null;             // before the season starts
   const days = Math.floor((now - SEASON_OPENER) / 86400000);
   const w = Math.floor(days / 7) + 1;
   return (w >= 1 && w <= 17) ? w : null;
 }
 
 async function detectNflWeek(){
-  /* 1. Sleeper's league state */
-  try{
-    const s = await ESPN.getJSON("https://api.sleeper.app/v1/state/nfl");
-    if(s){
-      const t = s.season_type;
-      const w = Number(s.display_week || s.week);
-      if(t === "regular" && w >= 1) return Math.min(17, w);
-      if(t === "post") return 17;
-      if(t === "pre")  return 1;
-    }
-  }catch(e){ /* try the next source */ }
-
-  /* 2. ESPN's scoreboard reports the week it is currently showing */
   try{
     const j = await ESPN.getJSON(ESPN.BASE + "/scoreboard");
     const w = Number(j?.week?.number);
     const type = j?.season?.type;
     if(w >= 1){
       if(type === 3) return 17;                    // postseason
-      if(type === 2) return Math.min(17, w);       // regular
-      return 1;                                    // preseason
+      if(type === 2) return Math.min(17, w);       // regular season
+      return 1;                                    // preseason: hold at week 1
     }
   }catch(e){ /* fall through to the calendar */ }
-
-  /* 3. no network — count weeks off the opener */
   return estimateWeek();
 }
 
@@ -3969,7 +3676,17 @@ function applyFeedToSheet(){
       const p = playerByName(ti, nm);
       if(!p) return;
       const fp = feedPointsFor(p);
-      if(!fp) return;
+      if(!fp){
+        /* nothing in the box scores for him — clear anything the feed put
+           here earlier, so a stale number cannot sit on the sheet */
+        const gotData = Object.keys(Feed.players).length > 0 ||
+                        Object.keys(Feed.defenses).length > 0;
+        if(gotData && P[s.key] !== undefined){
+          delete P[s.key];
+          touched.add(ti);
+        }
+        return;
+      }
       if(P[s.key] !== fp.pts){
         P[s.key] = fp.pts;
         touched.add(ti);
@@ -4128,12 +3845,40 @@ function teamTotal(w, t){
   return Math.round(vals.reduce((x,y)=>x+y, 0) * 10) / 10;
 }
 
+/* How many of a team's starters still have football to play this week?
+   A man on bye has no game to wait for. Returns null when the week's
+   schedule is unknown, so callers can fall back rather than stall. */
+function startersOutstanding(w, t){
+  const L = lineupOf(w, t);
+  const filled = SLOTS.filter(s => L[s.key]);
+  if(!filled.length) return 0;
+  if(!schedule[schedKey(w)]) return null;        // no schedule to judge by
+  let left = 0;
+  filled.forEach(s=>{
+    const p = playerByName(t, L[s.key]);
+    if(!p) return;
+    const g = matchupFor(p, w);
+    if(!g || g.bye) return;                      // on bye, nothing to wait for
+    if(g.state !== "post") left++;
+  });
+  return left;
+}
+
+/* A result only stands once both sides have finished playing. */
+function matchupSettled(w, a, b){
+  if(a === null || a === undefined || b === null || b === undefined) return false;
+  const la = startersOutstanding(w, a), lb = startersOutstanding(w, b);
+  if(la === null || lb === null) return true;    // schedule unknown — judge on points alone
+  return la === 0 && lb === 0;
+}
+
 function standings(){
   const rows = TEAMS.map((t,i)=>({ i, owner:t.owner, slot:t.slot, w:0, l:0, t:0, pf:0, pa:0 }));
   for(let wk=1; wk<=REG_WEEKS; wk++){
     regularMatchups(wk).forEach(m=>{
       const a = teamTotal(wk, m.a), b = teamTotal(wk, m.b);
       if(a===null || b===null) return;
+      if(!matchupSettled(wk, m.a, m.b)) return;   // still being played
       const A = rows[m.a], B = rows[m.b];
       A.pf+=a; A.pa+=b; B.pf+=b; B.pa+=a;
       if(a>b){A.w++;B.l++;} else if(b>a){B.w++;A.l++;} else {A.t++;B.t++;}
@@ -4165,6 +3910,7 @@ function playoffMatchups(w){
   const outcome = semis.map(m=>{
     const a = teamTotal(16, m.a), b = teamTotal(16, m.b);
     if(m.a===null || m.b===null || a===null || b===null || a===b) return null;
+    if(!matchupSettled(16, m.a, m.b)) return null;   // semifinal still running
     return a>b ? {win:m.a, lose:m.b} : {win:m.b, lose:m.a};
   });
   return [
@@ -4252,11 +3998,21 @@ function sheetHTML(m, gi){
   const teams = [m.a, m.b];
   const labels = [m.aLabel || "TBD", m.bLabel || "TBD"];
   const totals = teams.map(t => teamTotal(w, t));
-  const decided = totals[0] !== null && totals[1] !== null;
+  const settled = matchupSettled(w, m.a, m.b);
+  const decided = settled && totals[0] !== null && totals[1] !== null;
   const winner = decided ? (totals[0] > totals[1] ? 0 : (totals[1] > totals[0] ? 1 : -1)) : -2;
   const known = t => t !== null && t !== undefined;
-  const tagFor = si => '<span class="tagslot">' + (winner===si ? '<span class="mtag">Win</span>'
-                     : (winner===-1 ? '<span class="mtag tie">Tie</span>' : "")) + '</span>';
+  const left = si => startersOutstanding(w, teams[si]);
+  const tagFor = si => {
+    let inner = "";
+    if(winner === si)       inner = '<span class="mtag">Win</span>';
+    else if(winner === -1)  inner = '<span class="mtag tie">Tie</span>';
+    else if(!settled){
+      const n = left(si);
+      if(n) inner = '<span class="mtag playing">' + n + ' to play</span>';
+    }
+    return '<span class="tagslot">' + inner + '</span>';
+  };
   const totalCell = (t,si,cls) =>
     '<span class="' + cls + (winner===si?" won":"") + '"' +
     (known(t) ? ' data-team="'+t+'"' : '') + '>' + (totals[si]===null ? "—" : totals[si]) + '</span>';
@@ -4328,7 +4084,9 @@ function renderMatchups(){
   document.getElementById("matchHint").textContent =
     w>REG_WEEKS
       ? (seededTeams().length ? "Seeded from the standings below." : "Seeds appear once regular season results are in.")
-      : (scoresUnlocked
+      : (games.some(g => !matchupSettled(w, g.a, g.b))
+          ? "Results are held until every starter's game has finished."
+        : scoresUnlocked
           ? "Scores are open — type over any number to overrule the feed."
           : (Feed.on && Feed.week === w
              ? "Feed is filling the points. Unlock scores to correct one by hand."
@@ -4402,7 +4160,8 @@ function paintMatchupState(){
     if(!block) return;
     const teams  = [m.a, m.b];
     const totals = teams.map(t => teamTotal(w, t));
-    const decided = totals[0] !== null && totals[1] !== null;
+    const settled = matchupSettled(w, m.a, m.b);
+    const decided = settled && totals[0] !== null && totals[1] !== null;
     const winner = decided ? (totals[0] > totals[1] ? 0 : (totals[1] > totals[0] ? 1 : -1)) : -2;
 
     block.querySelectorAll(".total-val").forEach(el=>{
@@ -4417,8 +4176,12 @@ function paintMatchupState(){
     block.querySelectorAll(".sheet-team").forEach((th, si)=> th.classList.toggle("won", winner === si));
     block.querySelectorAll(".tblock-head").forEach((h, si)=> h.classList.toggle("won", winner === si));
     block.querySelectorAll(".tagslot").forEach((slot, si)=>{
-      slot.innerHTML = winner === si ? '<span class="mtag">Win</span>'
-                     : (winner === -1 ? '<span class="mtag tie">Tie</span>' : "");
+      if(winner === si)      slot.innerHTML = '<span class="mtag">Win</span>';
+      else if(winner === -1) slot.innerHTML = '<span class="mtag tie">Tie</span>';
+      else if(!settled){
+        const n = startersOutstanding(w, teams[si]);
+        slot.innerHTML = n ? '<span class="mtag playing">' + n + ' to play</span>' : "";
+      } else slot.innerHTML = "";
     });
   });
 
@@ -4526,16 +4289,8 @@ function renderLiveBar(){
     (Feed.status === "live" ? " · refreshing every 45s" : "");
 
   const partial = Object.values(Feed.defenses).some(d => d.partial);
-  const missing = Feed.source && Feed.source.indexOf("Sleeper") === 0 ? Sleeper.unresolved() : [];
   const notes = [];
   if(Feed.softError) notes.push(esc(Feed.softError));
-  if(partial) notes.push("Some defences have no opponent for this week, so the rushing and passing yards-allowed ladders read 0 for them. Switch Source to \"Sleeper + ESPN\" to fill those in.");
-  if(Feed.source && Feed.source.indexOf("Sleeper") === 0 && !Sleeper.sackKey()
-     && Object.keys(Feed.defenses).length){
-    notes.push("Sleeper did not report sack yardage this week, so passing yards allowed is gross rather than net. That understates defensive scores slightly; the matchup sheet shows the figure used.");
-  }
-  if(missing.length) notes.push("No Sleeper id for: " + esc(missing.slice(0,6).join(", ")) +
-    (missing.length > 6 ? " and " + (missing.length-6) + " more" : "") + ". Score them by hand.");
 
   if(notes.length){
     err.hidden = false;
@@ -4547,17 +4302,6 @@ function renderLiveBar(){
 }
 
 function wireLive(){
-  const sel = document.getElementById("providerSel");
-  sel.value = Feed.provider;
-  sel.addEventListener("change", async ()=>{
-    Feed.provider = sel.value;
-    Feed.gameCache = {};
-    if(Store.mode !== "memory"){
-      try{ await Store.set(PROVIDER_KEY, JSON.stringify(Feed.provider), false); }catch(e){}
-    }
-    if(Feed.on) pullFeed(matchWeek, true); else renderLiveBar();
-  });
-
   document.getElementById("liveToggle").addEventListener("click", ()=>{
     Feed.on = !Feed.on;
     if(Feed.on){
@@ -4580,20 +4324,7 @@ function wireLive(){
 /* ============================================================
    APPEARANCE
    ============================================================ */
-const THEME_KEY = "league2026-theme";
-const PROVIDER_KEY = "league2026-provider";
-
-async function loadProvider(){
-  if(Store.mode === "memory") return;
-  try{
-    const r = await Store.get(PROVIDER_KEY, false);
-    if(r && r.value){
-      const v = JSON.parse(r.value);
-      if(["auto","sleeper","espn"].includes(v)) Feed.provider = v;
-    }
-  }catch(e){ /* default stands */ }
-}
-const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+const THEME_KEY = "league2026-theme";const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
 let themeChoice = null;
 
 function applyTheme(){
@@ -4793,7 +4524,7 @@ function wireLocks(){
 /* ============================================================
    BOOT
    ============================================================ */
-Store.detect().then(loadBook).then(loadStats).then(loadProvider).then(loadSchedule).then(()=>{
+Store.detect().then(loadBook).then(loadStats).then(loadSchedule).then(()=>{
   renderOwners();
   renderTabs();
   renderRoster();
