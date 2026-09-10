@@ -2208,6 +2208,19 @@ async function pullFeed(week, manual){
     const events = await ESPN.weekEvents(week);
     Feed.games = events;
 
+    /* These statuses are seconds old, so fold them into the cached fixtures
+       rather than letting the sheet run on whatever was stored earlier. */
+    const cached = schedule[schedKey(week)];
+    if(cached){
+      events.forEach(e=>{
+        (e.teams || []).forEach(ab=>{
+          if(cached[ab]){ cached[ab].state = e.state; cached[ab].detail = e.detail; }
+        });
+      });
+      cached.__at = Date.now();
+      saveSchedule();
+    }
+
     const want = neededNflTeams();
     const relevant = events.filter(e =>
       e.state !== "pre" && e.teams.some(a => want.has(a))
@@ -3561,10 +3574,33 @@ const schedKey = w => "R" + w;
 
 const schedPromise = {};
 
+/* Opponents and kickoff times are settled, but a game's status is not — it
+   moves from pre to in to post through the day. Cache the fixtures, re-read the
+   statuses. Anything not yet final goes stale after two minutes. */
+const SCHED_TTL = 120000;
+/* mark a week's fixtures as needing a fresh read */
+function expireSchedule(w){
+  const m = schedule[schedKey(w)];
+  if(m) delete m.__at;
+  delete schedFailed[schedKey(w)];
+}
+function schedStale(map){
+  if(!map || !map.__at) return true;
+  if(Date.now() - map.__at > SCHED_TTL) return true;
+  return false;
+}
+function schedSettled(map){
+  if(!map) return false;
+  return Object.keys(map).filter(k=>k !== "__at")
+    .every(k => map[k].state === "post");
+}
+
 async function fetchWeekSchedule(w){
   const key = schedKey(w);
-  if(schedule[key]) return schedule[key];
-  if(schedFailed[key]) return null;
+  const have = schedule[key];
+  /* a week where every game has finished never needs re-reading */
+  if(have && (schedSettled(have) || !schedStale(have))) return have;
+  if(schedFailed[key] && have) return have;
   /* an in-flight fetch must be awaitable, not skipped — otherwise a caller
      that needs the schedule races past it and sees nothing */
   if(schedPromise[key]) return schedPromise[key];
@@ -3592,15 +3628,17 @@ async function fetchWeekSchedule(w){
                                         state, detail, kick, score:as, oppScore:hs };
       });
       if(Object.keys(map).length){
+        map.__at = Date.now();
+        delete schedFailed[key];
         schedule[key] = map;
         saveSchedule();
         return map;
       }
       schedFailed[key] = true;      // week not published yet
-      return null;
+      return schedule[key] || null;
     }catch(e){
-      schedFailed[key] = true;      // offline — don't hammer it on every render
-      return null;
+      schedFailed[key] = true;      // offline — keep whatever we already had
+      return schedule[key] || null;
     }finally{
       delete schedPromise[key];
       renderCardOnly();
@@ -3615,6 +3653,7 @@ async function fetchWeekSchedule(w){
 function matchupFor(player, w){
   const m = schedule[schedKey(w)];
   if(!m) return null;
+  if(player.team === "__at") return null;
   const alt = ESPN.TEAM_ALIAS[player.team];
   const g = m[player.team] || (alt ? m[alt] : null);
   if(g) return g;
@@ -3727,7 +3766,7 @@ function renderCardOnly(){
   document.getElementById("cardWeek").textContent = "Week " + week;
 
   const showLive = Feed.on && Feed.week === week;
-  if(!schedule[schedKey(week)]) fetchWeekSchedule(week);
+  fetchWeekSchedule(week);        // returns the cache unless it has gone stale
 
   document.getElementById("slots").innerHTML = SLOTS.map(s=>{
     const p = card[s.key];
@@ -4060,6 +4099,11 @@ async function refreshBook(manualClick){
   const btn = document.getElementById("refreshBook");
   if(btn) btn.textContent = "Refreshing…";
   await loadBook();
+  if(manualClick){                      // pressing Refresh means "go and look"
+    expireSchedule(matchWeek);
+    if(week !== matchWeek) expireSchedule(week);
+    await fetchWeekSchedule(matchWeek);
+  }
   refreshing = false;
   if(btn) btn.textContent = "Refresh";
   renderOwners();
@@ -4274,7 +4318,7 @@ function renderMatchups(){
   const w = matchWeek;
   /* the sheet can sit on a different week from the lineup card, and the
      kickoff locks need that week's schedule to know what has started */
-  if(!schedule[schedKey(w)]) fetchWeekSchedule(w);
+  fetchWeekSchedule(w);
   const games = matchupsFor(w);
 
   document.getElementById("matchWeekTitle").textContent =
