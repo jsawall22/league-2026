@@ -655,6 +655,8 @@ input.pt-in.sealed.autofinal{color:var(--moss)}
 }
 .mtag.tie{border-color:var(--graphite);color:var(--graphite)}
 .mtag.playing{border-color:var(--ochre);color:var(--ochre)}
+.mtag.toplay{border-color:var(--graphite);color:var(--graphite)}
+.tagslot .mtag + .mtag{margin-left:5px}
 
 /* lineup sheet inside a matchup */
 .sheet-wrap{overflow-x:auto;border:1.5px solid var(--ink);background:var(--paper-2);margin-top:6px}
@@ -3871,31 +3873,35 @@ function teamTotal(w, t){
   return Math.round(vals.reduce((x,y)=>x+y, 0) * 10) / 10;
 }
 
-/* How many of a team's starters still have football to play this week?
-   A man on bye has no game to wait for. Returns null when the week's
-   schedule is unknown, so callers can fall back rather than stall. */
-function startersOutstanding(w, t){
+/* Where do a team's starters stand this week?
+     toPlay — his game has not kicked off
+     live   — his game is under way
+   A man on bye has no game to wait for, and neither does one whose game has
+   finished. Returns null when the week's schedule is unknown, so callers can
+   fall back rather than stall for ever. */
+function startersPending(w, t){
   const L = lineupOf(w, t);
   const filled = SLOTS.filter(s => L[s.key]);
-  if(!filled.length) return 0;
+  if(!filled.length) return { toPlay:0, live:0, total:0 };
   if(!schedule[schedKey(w)]) return null;        // no schedule to judge by
-  let left = 0;
+  let toPlay = 0, live = 0;
   filled.forEach(s=>{
     const p = playerByName(t, L[s.key]);
     if(!p) return;
     const g = matchupFor(p, w);
     if(!g || g.bye) return;                      // on bye, nothing to wait for
-    if(g.state !== "post") left++;
+    if(g.state === "in") live++;
+    else if(g.state !== "post") toPlay++;
   });
-  return left;
+  return { toPlay, live, total: toPlay + live };
 }
 
 /* A result only stands once both sides have finished playing. */
 function matchupSettled(w, a, b){
   if(a === null || a === undefined || b === null || b === undefined) return false;
-  const la = startersOutstanding(w, a), lb = startersOutstanding(w, b);
+  const la = startersPending(w, a), lb = startersPending(w, b);
   if(la === null || lb === null) return true;    // schedule unknown — judge on points alone
-  return la === 0 && lb === 0;
+  return la.total === 0 && lb.total === 0;
 }
 
 function standings(){
@@ -4028,15 +4034,17 @@ function sheetHTML(m, gi){
   const decided = settled && totals[0] !== null && totals[1] !== null;
   const winner = decided ? (totals[0] > totals[1] ? 0 : (totals[1] > totals[0] ? 1 : -1)) : -2;
   const known = t => t !== null && t !== undefined;
-  const left = si => startersOutstanding(w, teams[si]);
+  const pending = si => startersPending(w, teams[si]);
+  const pendingTags = pn => {
+    if(!pn) return "";
+    return (pn.toPlay ? '<span class="mtag toplay">' + pn.toPlay + ' to play</span>' : "") +
+           (pn.live   ? '<span class="mtag playing">' + pn.live + ' in progress</span>' : "");
+  };
   const tagFor = si => {
     let inner = "";
     if(winner === si)       inner = '<span class="mtag">Win</span>';
     else if(winner === -1)  inner = '<span class="mtag tie">Tie</span>';
-    else if(!settled){
-      const n = left(si);
-      if(n) inner = '<span class="mtag playing">' + n + ' to play</span>';
-    }
+    else if(!settled)       inner = pendingTags(pending(si));
     return '<span class="tagslot">' + inner + '</span>';
   };
   const totalCell = (t,si,cls) =>
@@ -4205,8 +4213,11 @@ function paintMatchupState(){
       if(winner === si)      slot.innerHTML = '<span class="mtag">Win</span>';
       else if(winner === -1) slot.innerHTML = '<span class="mtag tie">Tie</span>';
       else if(!settled){
-        const n = startersOutstanding(w, teams[si]);
-        slot.innerHTML = n ? '<span class="mtag playing">' + n + ' to play</span>' : "";
+        const pn = startersPending(w, teams[si]);
+        slot.innerHTML = pn
+          ? (pn.toPlay ? '<span class="mtag toplay">' + pn.toPlay + ' to play</span>' : "") +
+            (pn.live   ? '<span class="mtag playing">' + pn.live + ' in progress</span>' : "")
+          : "";
       } else slot.innerHTML = "";
     });
   });
